@@ -66,6 +66,7 @@
   <ItemGroup>
     <Compile Include="Main.cs" />
     <Compile Include="AppDelegate.cs" />
+    <Compile Include="SQLiteApple.cs" />
     <None Include="Entitlements.plist" />
     <None Include="Info.plist" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -136,6 +137,9 @@
     <PackageReference Include="Newtonsoft.Json">
       <Version>12.0.2</Version>
     </PackageReference>
+    <PackageReference Include="sqlite-net-pcl">
+      <Version>1.5.231</Version>
+    </PackageReference>
     <PackageReference Include="Xamarin.Forms" Version="4.0.0.394984-pre10" />
     <PackageReference Include="Xamarin.Essentials" Version="1.1.0" />
   </ItemGroup>
@@ -145,5 +149,68 @@
       <Project>{8B177AEA-5A4A-4D85-929E-686A9E78BD8C}</Project>
       <Name>SMLC2019</Name>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <BundleResource Include="Resources\isc_abagnale_c.jpg" />
+  </ItemGroup>
+  <ItemGroup>
+    <BundleResource Include="Resources\isc_abagnale_s.jpg" />
+  </ItemGroup>
+  <ItemGroup>
+    <BundleResource Include="Resources\isc_alfano_f.jpg" />
+  </ItemGroup>
+  <ItemGroup>
+    <BundleResource Include="Resources\isc_cannavacciuolo_s.jpg" />
+  </ItemGroup>
+  <ItemGroup>
+    <BundleResource Include="Resources\isc_cascone_f.jpg" />
+  </ItemGroup>
+  <ItemGroup>
+    <BundleResource Include="Resources\isc_d_amora_g.jpg" />
+  </ItemGroup>
+  <ItemGroup>
+    <BundleResource Include="Resources\isc_de_rosa_b.jpg" />
+  </ItemGroup>
+  <ItemGroup>
+    <BundleResource Include="Resources\isc_del_sorbo_g.jpg" />
+  </ItemGroup>
+  <ItemGroup>
+    <BundleResource Include="Resources\isc_elefante_ag.jpg" />
+  </ItemGroup>
+  <ItemGroup>
+    <BundleResource Include="Resources\isc_giordano_f.jpg" />
+  </ItemGroup>
+  <ItemGroup>
+    <BundleResource Include="Resources\isc_la_mura_c.jpg" />
+  </ItemGroup>
+  <ItemGroup>
+    <BundleResource Include="Resources\isc_lione_r.jpg" />
+  </ItemGroup>
+  <ItemGroup>
+    <BundleResource Include="Resources\isc_orazzo_p.jpg" />
+  </ItemGroup>
+  <ItemGroup>
+    <BundleResource Include="Resources\isc_scala_s.jpg" />
+  </ItemGroup>
+  <ItemGroup>
+    <BundleResource Include="Resources\isc_scarico_f.jpg" />
+  </ItemGroup>
+  <ItemGroup>
+    <BundleResource Include="Resources\isc_zambrano_m.jpg" />
+  </ItemGroup>
+  <ItemGroup>
+    <BundleResource Include="Resources\logo_isc.jpg" />
+  </ItemGroup>
+  <ItemGroup>
+    <BundleResource Include="Resources\logo_pc.jpg" />
+  </ItemGroup>
+  <ItemGroup>
+    <BundleResource Include="Resources\logo_sc.jpg" />
+  </ItemGroup>
+  <ItemGroup>
+    <BundleResource Include="Resources\no_image.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <BundleResource Include="Resources\sindaco_isc.jpg" />
   </ItemGroup>
 </Project>

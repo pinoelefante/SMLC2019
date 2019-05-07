@@ -1,0 +1,104 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="SMLC2019.Views.AggiungiVoto1"
+             Title="Aggiungi 1">
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition />
+            <RowDefinition Height="Auto" />
+        </Grid.RowDefinitions>
+        
+        <StackLayout x:Name="altreSchedeContainer"
+                     Grid.Row="0"
+                     HorizontalOptions="Center"
+                     Padding="5" />
+
+        <!-- Inserimento voti -->
+        <Grid Grid.Row="1"
+              Padding="5">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="2*" />
+            </Grid.ColumnDefinitions>
+
+            <!-- Immagine del partito -->
+            <!--
+            <ImageButton Grid.Column="0"
+                         Clicked="ApriPickerPartito"
+                         Source="{Binding PartitoSelezionato.logo, Mode=TwoWay}"
+                         />
+            -->
+            <Image Grid.Column="0"
+                   BackgroundColor="DarkGray"
+                   Source="{Binding PartitoSelezionato.logo, Mode=TwoWay}"
+                   Aspect="AspectFit"
+                   HeightRequest="150">
+                <Image.GestureRecognizers>
+                    <ClickGestureRecognizer Clicked="ApriPickerPartito" />
+                    <TapGestureRecognizer Tapped="ApriPickerPartito" />
+                </Image.GestureRecognizers>
+            </Image>
+            
+            <Picker x:Name="pickerPartito"
+                    Grid.Column="0"
+                    ItemsSource="{Binding ElencoPartiti}"
+                    ItemDisplayBinding="{Binding nome}"
+                    SelectedItem="{Binding PartitoSelezionato, Mode=TwoWay}"
+                    IsVisible="False" />
+
+            <Grid Grid.Column="1">
+                <Grid.RowDefinitions>
+                    <RowDefinition />
+                    <RowDefinition />
+                    <RowDefinition Height="Auto"/>
+                </Grid.RowDefinitions>
+
+                <Picker Grid.Row="0"
+                        BackgroundColor="Aqua"
+                        ItemsSource="{Binding ElencoCandidatiMaschi}"
+                        SelectedItem="{Binding MaschioSelezionato, Mode=TwoWay}"/>
+
+                <Picker Grid.Row="1"
+                        BackgroundColor="LightPink"
+                        ItemsSource="{Binding ElencoCandidatiFemmine}"
+                        SelectedItem="{Binding FemminaSelezionata, Mode=TwoWay}"/>
+
+                <Button Grid.Row="2"
+                        HorizontalOptions="Center"
+                        Text="Aggiungi"
+                        Command="{Binding AggiungiCommand}"/>
+            </Grid>
+        </Grid>
+        
+        <!-- Ultimi voti inseriti -->
+        <ListView Grid.Row="2"
+                  Margin="5"
+                  Header="Ultimi 5 voti inseriti" />
+        
+        <!-- Bottoni -->
+        <Grid Grid.Row="3"
+              Padding="5">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition />
+                <ColumnDefinition />
+                <ColumnDefinition />
+                <ColumnDefinition />
+            </Grid.ColumnDefinitions>
+
+            <Button Grid.Column="0"
+                    Text="Canc" />
+
+            <Button Grid.Column="1"
+                    Text="Aggiorna"
+                    IsEnabled="{Binding IsAssetsToLoad}"/>
+
+            <Button Grid.Column="3"
+                    Text="Invia" />
+        </Grid>
+
+        
+    </Grid>
+</ContentPage>

@@ -12,8 +12,7 @@ namespace SMLC2019
         public App()
         {
             InitializeComponent();
-
-            DependencyService.Register<MockDataStore>();
+            
             MainPage = new MainPage();
         }
 
