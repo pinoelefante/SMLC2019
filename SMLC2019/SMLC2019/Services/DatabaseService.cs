@@ -122,5 +122,16 @@ namespace pinoelefante.Services
                 return con.Table<Voto>().ToList();
             }
         }
+
+        public IEnumerable<Voto> GetLastVoti(int seggio, int limit=5)
+        {
+            using (var con = GetConnection())
+            {
+                return con.Table<Voto>().Where(x => x.seggio == seggio)
+                                        .OrderByDescending(x => x.tempo)
+                                        .Take(limit)
+                                        .ToList();
+            }
+        }
     }
 }

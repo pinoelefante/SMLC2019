@@ -76,8 +76,22 @@
         <!-- Ultimi voti inseriti -->
         <ListView Grid.Row="2"
                   Margin="5"
-                  Header="Ultimi 5 voti inseriti" />
-        
+                  Header="Ultimi voti inseriti"
+                  ItemsSource="{Binding UltimiVoti}">
+            <ListView.ItemTemplate>
+                <DataTemplate>
+                    <ViewCell>
+                        <Grid Padding="5">
+                            <Image Grid.Column="0" Source="{Binding Partito.logo}" />
+                            <Image Grid.Column="1" Source="{Binding Maschio.foto}" />
+                            <Image Grid.Column="2" Source="{Binding Femmina.foto}" />
+                            <Label Grid.Column="3" Text="{Binding Voto.tempo}" />
+                        </Grid>
+                    </ViewCell>
+                </DataTemplate>
+            </ListView.ItemTemplate>
+        </ListView>
+
         <!-- Bottoni -->
         <Grid Grid.Row="3"
               Padding="5">

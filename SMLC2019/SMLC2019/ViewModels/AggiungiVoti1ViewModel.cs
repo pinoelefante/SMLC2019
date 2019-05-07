@@ -15,6 +15,7 @@ namespace SMLC2019.ViewModels
 {
     public class AggiungiVoti1ViewModel : BasicViewModel
     {
+        public int LimiteVotiVisualizzati { get; set; } = 10;
         public Dictionary<Partito, List<Candidato>> elencoCandidati;
         private ServerAPI api;
         private DatabaseService db;
@@ -31,7 +32,7 @@ namespace SMLC2019.ViewModels
         {
             if (!elencoCandidati.Any())
                 await CaricaAssets();
-            
+            CaricaUltimiVoti();
         }
 
         private int seggio;
@@ -93,7 +94,13 @@ namespace SMLC2019.ViewModels
             var candidati = db.GetAllCandidati();
             if (partiti == null || !partiti.Any() || candidati == null || !candidati.Any())
             {
-                
+                Debug.WriteLine("Carico assets dal web");
+                await CaricaAssetsOnlineAsync();
+            }
+            else
+            {
+                Debug.WriteLine("Carico assets dal db");
+                Populate(partiti, candidati);
             }
         }
 
@@ -102,18 +109,43 @@ namespace SMLC2019.ViewModels
             var assets = await api.GetAssetsAsync();
             if (assets == null)
                 return;
+            Populate(assets.partiti, assets.candidati);
+            
+            db.SaveItems(assets.partiti);
+            db.SaveItems(assets.candidati);
+        }
+
+        private void Populate(IEnumerable<Partito> partiti, IEnumerable<Candidato> candidati)
+        {
             Device.BeginInvokeOnMainThread(() =>
             {
-                ElencoPartiti.AddRange(assets.partiti.Where(x => x.sindaco != null).OrderBy(x => x.ordine));
-                foreach (var p in assets.partiti)
+                var altreSchede = candidati.Where(x => x.sesso.Equals("N", StringComparison.CurrentCultureIgnoreCase));
+
+                ElencoPartiti.AddRange(partiti.Where(x => x.sindaco != null).OrderBy(x => x.ordine));
+                foreach (var p in partiti)
                 {
                     elencoCandidati.Add(p, new List<Candidato>());
-                    elencoCandidati[p].AddRange(assets.candidati.Where(x => x.partito == p.id).OrderBy(x => x.cognome).ThenBy(x => x.nome));
+                    elencoCandidati[p].AddRange(candidati.Where(x => x.partito == p.id).OrderBy(x => x.cognome).ThenBy(x => x.nome));
                 }
                 IsAssetsToLoad = !elencoCandidati.Any();
             });
         }
 
+        public ObservableCollection<VotoWrapped> UltimiVoti { get; } = new ObservableCollection<VotoWrapped>();
+
+        private void CaricaUltimiVoti()
+        {
+            
+            var voti = db.GetLastVoti(NumeroSeggio, LimiteVotiVisualizzati);
+            Device.BeginInvokeOnMainThread(() =>
+            {
+                UltimiVoti.Clear();
+                foreach (var v in voti.OrderBy(x => x.tempo))
+                    AggiungiUltimoVoto(v);
+            });
+            
+        }
+        
         private ICommand aggiungiCommand;
         public ICommand AggiungiCommand =>
             aggiungiCommand ??
@@ -130,12 +162,30 @@ namespace SMLC2019.ViewModels
                     maschio = MaschioSelezionato?.id
                 };
                 db.SaveItem(v);
+
+                AggiungiUltimoVoto(v);
                 
                 FemminaSelezionata = null;
                 MaschioSelezionato = null;
                 PartitoSelezionato = null;
             }));
 
+        private void AggiungiUltimoVoto(Voto v)
+        {
+            var p = ElencoPartiti.FirstOrDefault(x => x.id == v.partito);
+
+            VotoWrapped vw = new VotoWrapped(v,
+                p,
+                elencoCandidati[p].FirstOrDefault(x => x.id == v.maschio),
+                elencoCandidati[p].FirstOrDefault(x => x.id == v.femmina));
+
+            Device.BeginInvokeOnMainThread(() =>
+            {
+                if (UltimiVoti.Count == LimiteVotiVisualizzati)
+                    UltimiVoti.RemoveAt(LimiteVotiVisualizzati-1);
+                UltimiVoti.Insert(0, vw);
+            });
+        }
     }
 
     public static class ObservableCollectionExtension
@@ -146,6 +196,22 @@ namespace SMLC2019.ViewModels
             {
                 collection.Add(item);
             }
+        }
+    }
+
+    public class VotoWrapped
+    {
+        public Voto Voto { get; }
+        public Partito Partito { get; }
+        public Candidato Maschio { get; }
+        public Candidato Femmina { get; }
+
+        public VotoWrapped(Voto voto, Partito p, Candidato m, Candidato f)
+        {
+            Voto = voto;
+            Partito = p;
+            Maschio = m;
+            Femmina = f;
         }
     }
 }
