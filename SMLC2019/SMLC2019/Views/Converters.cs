@@ -34,7 +34,7 @@ namespace SMLC2019.Views
             var candidato = value as Candidato;
             if (candidato == null)
                 return string.Empty;
-            return $"{candidato.cognome} {(candidato!=null ? candidato.nome.First()+"." : string.Empty)}".Trim();
+            return $"{candidato.cognome} {(candidato.nome!=null ? candidato.nome.First()+"." : string.Empty)}".Trim();
         }
 
         public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)

@@ -30,5 +30,6 @@
 -->
     <TabbedPage.Children>
         <views:AggiungiVoto1 />
+        <views:AggiungiVoto2 />
     </TabbedPage.Children>
 </TabbedPage>

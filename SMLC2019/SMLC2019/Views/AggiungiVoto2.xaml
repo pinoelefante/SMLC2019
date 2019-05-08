@@ -1,0 +1,88 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="SMLC2019.Views.AggiungiVoto2"
+             xmlns:views="clr-namespace:SMLC2019.Views"
+             Title="Aggiungi Voto 2">
+    <ContentPage.Resources>
+        <views:StringImageSourceConverter x:Key="StringImageSourceConverter" />
+        <views:ListNameConverter x:Key="ListNameConverter" />
+        <views:UnixTimestampTimeConverter x:Key="UnixTimestampTimeConverter" />
+    </ContentPage.Resources>
+    
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition />
+            <RowDefinition Height="Auto"/>
+        </Grid.RowDefinitions>
+
+        <Grid Grid.Row="1">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="1.25*" />
+                <ColumnDefinition Width="3*" />
+            </Grid.ColumnDefinitions>
+
+            <Grid.RowDefinitions>
+                <RowDefinition />
+                <RowDefinition />
+            </Grid.RowDefinitions>
+
+            <ListView Grid.Column="0"
+                      Grid.RowSpan="2"
+                      ItemsSource="{Binding ElencoPartiti}"
+                      SelectedItem="{Binding PartitoSelezionato, Mode=TwoWay}"
+                      RowHeight="100">
+                <ListView.ItemTemplate>
+                    <DataTemplate>
+                        <ViewCell>
+                            <StackLayout Orientation="Vertical">
+                                <Image Source="{Binding logo}" HeightRequest="75" />
+                                <Label Text="{Binding nome}" HorizontalTextAlignment="Center" />
+                            </StackLayout>
+                        </ViewCell>
+                    </DataTemplate>
+                </ListView.ItemTemplate>
+            </ListView>
+
+            <CollectionView Grid.Column="1"
+                            Grid.Row="0"
+                            ItemsSource="{Binding ElencoCandidatiMaschi}"
+                            SelectedItem="{Binding MaschioSelezionato, Mode=TwoWay}"
+                            BackgroundColor="Aqua"
+                            SelectionMode="Single"
+                            Visual="Material">
+                <CollectionView.ItemsLayout>
+                    <GridItemsLayout Orientation="Vertical" Span="6" />
+                </CollectionView.ItemsLayout>
+                <CollectionView.ItemTemplate>
+                    <DataTemplate>
+                        <StackLayout Orientation="Vertical">
+                            <Image Source="{Binding foto}" Aspect="AspectFit" HeightRequest="80"/>
+                            <Label Text="{Binding ., Converter={StaticResource ListNameConverter}}" HorizontalTextAlignment="Center" />
+                        </StackLayout>
+                    </DataTemplate>
+                </CollectionView.ItemTemplate>
+            </CollectionView>
+
+            <CollectionView Grid.Column="1"
+                            Grid.Row="1"
+                            ItemsSource="{Binding ElencoCandidatiFemmine}"
+                            SelectedItem="{Binding FemminaSelezionata, Mode=TwoWay}"
+                            BackgroundColor="LightPink"
+                            SelectionMode="Single">
+                <CollectionView.ItemsLayout>
+                    <GridItemsLayout Orientation="Vertical" Span="5" />
+                </CollectionView.ItemsLayout>
+                <CollectionView.ItemTemplate>
+                    <DataTemplate>
+                        <StackLayout Orientation="Vertical">
+                            <Image Source="{Binding foto}" Aspect="AspectFit" HeightRequest="80"/>
+                            <Label Text="{Binding ., Converter={StaticResource ListNameConverter}}" HorizontalTextAlignment="Center" />
+                        </StackLayout>
+                    </DataTemplate>
+                </CollectionView.ItemTemplate>
+            </CollectionView>
+        </Grid>
+    </Grid>
+</ContentPage>
