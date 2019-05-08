@@ -15,7 +15,7 @@ namespace SMLC2019.ViewModels
 {
     public class AggiungiVoti1ViewModel : BasicViewModel
     {
-        public int LimiteVotiVisualizzati { get; set; } = 10;
+        public int LimiteVotiVisualizzati { get; set; } = 5;
         public Dictionary<Partito, List<Candidato>> elencoCandidati;
         private ServerAPI api;
         private DatabaseService db;
@@ -36,7 +36,7 @@ namespace SMLC2019.ViewModels
         }
 
         private int seggio;
-        private Partito partitoSelezionato;
+        private Partito partitoSelezionato = null;
 
         public int NumeroSeggio { get => seggio; set => Set(ref seggio, value); }
 
@@ -47,7 +47,7 @@ namespace SMLC2019.ViewModels
             set
             {
                 Set(ref partitoSelezionato, value);
-                CaricaCandidati(partitoSelezionato);
+                CaricaCandidati(value);
             }
         }
 
@@ -81,9 +81,12 @@ namespace SMLC2019.ViewModels
                 if (p != null)
                 {
                     ElencoCandidatiMaschi.Add(emptyCandidato);
-                    ElencoCandidatiMaschi.AddRange(elencoCandidati[p].Where(x => x.sesso.Equals("M", StringComparison.CurrentCultureIgnoreCase)));
+                    var maschi = elencoCandidati[p].Where(x => x.sesso.Equals("M", StringComparison.CurrentCultureIgnoreCase));
+                    ElencoCandidatiMaschi.AddRange(maschi);
+
                     ElencoCandidatiFemmine.Add(emptyCandidato);
-                    ElencoCandidatiFemmine.AddRange(elencoCandidati[p].Where(x => x.sesso.Equals("F", StringComparison.CurrentCultureIgnoreCase)));
+                    var femmine = elencoCandidati[p].Where(x => x.sesso.Equals("F", StringComparison.CurrentCultureIgnoreCase));
+                    ElencoCandidatiFemmine.AddRange(femmine);
                 }
             });
         }
@@ -164,10 +167,13 @@ namespace SMLC2019.ViewModels
                 db.SaveItem(v);
 
                 AggiungiUltimoVoto(v);
-                
-                FemminaSelezionata = null;
-                MaschioSelezionato = null;
-                PartitoSelezionato = null;
+
+                Device.BeginInvokeOnMainThread(() =>
+                {
+                    FemminaSelezionata = null;
+                    MaschioSelezionato = null;
+                    PartitoSelezionato = null;
+                });
             }));
 
         private void AggiungiUltimoVoto(Voto v)
@@ -192,10 +198,10 @@ namespace SMLC2019.ViewModels
     {
         public static void AddRange<T>(this ObservableCollection<T> collection, IEnumerable<T> items)
         {
+            if (items == null)
+                return;
             foreach(var item in items)
-            {
                 collection.Add(item);
-            }
         }
     }
 

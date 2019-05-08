@@ -27,9 +27,9 @@ namespace SMLC2019.Services
             return response == null ? null : response.content;
         }
         
-        public void GetVoti()
+        public async Task GetVotiPerSeggioAsync()
         {
-
+            var response = await SendRequestAsync<Assets>($"{Endpoint}?action=GetAssets", HttpMethod.GET);
         }
 
         public void GetVoti(int seggio)

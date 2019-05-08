@@ -2,7 +2,13 @@
 <ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              x:Class="SMLC2019.Views.AggiungiVoto1"
+             xmlns:views="clr-namespace:SMLC2019.Views"
              Title="Aggiungi 1">
+    <ContentPage.Resources>
+        <views:StringImageSourceConverter x:Key="StringImageSourceConverter" />
+        <views:ListNameConverter x:Key="ListNameConverter" />
+        <views:UnixTimestampTimeConverter x:Key="UnixTimestampTimeConverter" />
+    </ContentPage.Resources>
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto" />
@@ -25,19 +31,12 @@
             </Grid.ColumnDefinitions>
 
             <!-- Immagine del partito -->
-            <!--
-            <ImageButton Grid.Column="0"
-                         Clicked="ApriPickerPartito"
-                         Source="{Binding PartitoSelezionato.logo, Mode=TwoWay}"
-                         />
-            -->
             <Image Grid.Column="0"
                    BackgroundColor="DarkGray"
                    Source="{Binding PartitoSelezionato.logo, Mode=TwoWay}"
                    Aspect="AspectFit"
                    HeightRequest="150">
                 <Image.GestureRecognizers>
-                    <ClickGestureRecognizer Clicked="ApriPickerPartito" />
                     <TapGestureRecognizer Tapped="ApriPickerPartito" />
                 </Image.GestureRecognizers>
             </Image>
@@ -59,12 +58,24 @@
                 <Picker Grid.Row="0"
                         BackgroundColor="Aqua"
                         ItemsSource="{Binding ElencoCandidatiMaschi}"
-                        SelectedItem="{Binding MaschioSelezionato, Mode=TwoWay}"/>
+                        SelectedItem="{Binding MaschioSelezionato, Mode=TwoWay}">
+                    <Picker.Triggers>
+                        <DataTrigger TargetType="Picker" Binding="{Binding PartitoSelezionato}" Value="{x:Null}">
+                            <Setter Property="IsEnabled" Value="False" />
+                        </DataTrigger>
+                    </Picker.Triggers>
+                </Picker>
 
                 <Picker Grid.Row="1"
                         BackgroundColor="LightPink"
                         ItemsSource="{Binding ElencoCandidatiFemmine}"
-                        SelectedItem="{Binding FemminaSelezionata, Mode=TwoWay}"/>
+                        SelectedItem="{Binding FemminaSelezionata, Mode=TwoWay}">
+                    <Picker.Triggers>
+                        <DataTrigger TargetType="Picker" Binding="{Binding PartitoSelezionato}" Value="{x:Null}">
+                            <Setter Property="IsEnabled" Value="False" />
+                        </DataTrigger>
+                    </Picker.Triggers>
+                </Picker>
 
                 <Button Grid.Row="2"
                         HorizontalOptions="Center"
@@ -76,16 +87,28 @@
         <!-- Ultimi voti inseriti -->
         <ListView Grid.Row="2"
                   Margin="5"
-                  Header="Ultimi voti inseriti"
                   ItemsSource="{Binding UltimiVoti}">
+            <ListView.Header>
+                <Label Text="{Binding LimiteVotiVisualizzati, StringFormat='Ultimi {0} voti inseriti'}"/>
+            </ListView.Header>
             <ListView.ItemTemplate>
                 <DataTemplate>
                     <ViewCell>
                         <Grid Padding="5">
-                            <Image Grid.Column="0" Source="{Binding Partito.logo}" />
-                            <Image Grid.Column="1" Source="{Binding Maschio.foto}" />
-                            <Image Grid.Column="2" Source="{Binding Femmina.foto}" />
-                            <Label Grid.Column="3" Text="{Binding Voto.tempo}" />
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="*" />
+                                <ColumnDefinition Width="2.5*"/>
+                                <ColumnDefinition Width="*" />
+                                <ColumnDefinition Width="2.5*" />
+                                <ColumnDefinition Width="2*" />
+                            </Grid.ColumnDefinitions>
+                            <Image Grid.Column="0" Source="{Binding Partito.logo}" Margin="0,0,10,0" />
+                            <Image Grid.Column="1" Source="{Binding Maschio.foto}"  />
+                            <Label Grid.Column="2" Text="{Binding Maschio, Converter={StaticResource ListNameConverter}}" HorizontalTextAlignment="Start" VerticalOptions="Center" />
+                            <Image Grid.Column="3" Source="{Binding Femmina.foto}" />
+                            <Label Grid.Column="4" Text="{Binding Femmina, Converter={StaticResource ListNameConverter}}" HorizontalTextAlignment="Start" VerticalOptions="Center" />
+                            <Label Grid.Column="5" Text="{Binding Voto.tempo, Converter={StaticResource UnixTimestampTimeConverter}}" HorizontalTextAlignment="End" VerticalOptions="Center" Margin="0,0,10,0" FontAttributes="Italic" />
                         </Grid>
                     </ViewCell>
                 </DataTemplate>

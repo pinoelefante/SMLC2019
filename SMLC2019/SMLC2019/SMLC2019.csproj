@@ -1,4 +1,4 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
     <TargetFramework>netstandard2.0</TargetFramework>
@@ -9,6 +9,38 @@
     <DebugType>pdbonly</DebugType>
     <DebugSymbols>true</DebugSymbols>
   </PropertyGroup>
+
+  <ItemGroup>
+    <None Remove="Images\logo_isc.png" />
+    <None Remove="Images\logo_sc.png" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <EmbeddedResource Include="Images\isc_abagnale_c.jpg" />
+    <EmbeddedResource Include="Images\isc_abagnale_s.jpg" />
+    <EmbeddedResource Include="Images\isc_alfano_f.jpg" />
+    <EmbeddedResource Include="Images\isc_cannavacciuolo_s.jpg" />
+    <EmbeddedResource Include="Images\isc_cascone_f.jpg" />
+    <EmbeddedResource Include="Images\isc_del_sorbo_g.jpg" />
+    <EmbeddedResource Include="Images\isc_de_rosa_b.jpg" />
+    <EmbeddedResource Include="Images\isc_d_amora_g.jpg" />
+    <EmbeddedResource Include="Images\isc_elefante_ag.jpg" />
+    <EmbeddedResource Include="Images\isc_giordano_f.jpg" />
+    <EmbeddedResource Include="Images\isc_la_mura_c.jpg" />
+    <EmbeddedResource Include="Images\isc_lione_r.jpg" />
+    <EmbeddedResource Include="Images\isc_orazzo_p.jpg" />
+    <EmbeddedResource Include="Images\isc_scala_s.jpg" />
+    <EmbeddedResource Include="Images\isc_scarico_f.jpg" />
+    <EmbeddedResource Include="Images\isc_zambrano_m.jpg" />
+    <EmbeddedResource Include="Images\logo_isc.jpg" />
+    <EmbeddedResource Include="Images\logo_isc.png" />
+    <EmbeddedResource Include="Images\logo_pc.jpg" />
+    <EmbeddedResource Include="Images\logo_pc.png" />
+    <EmbeddedResource Include="Images\logo_sc.jpg" />
+    <EmbeddedResource Include="Images\logo_sc.png" />
+    <EmbeddedResource Include="Images\no_image.png" />
+    <EmbeddedResource Include="Images\sindaco_isc.jpg" />
+  </ItemGroup>
 
   <ItemGroup>
     <PackageReference Include="Newtonsoft.Json" Version="12.0.2" />
