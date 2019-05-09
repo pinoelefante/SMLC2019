@@ -17,13 +17,14 @@ namespace SMLC2019.Views
         {
             InitializeComponent();
 
-            BindingContext = new AggiungiVoti1ViewModel();
+            BindingContext = new AggiungiVoti2ViewModel();
         }
+        private AggiungiVoti2ViewModel VM => this.BindingContext as AggiungiVoti2ViewModel;
 
         protected async override void OnAppearing()
         {
             base.OnAppearing();
-            await (BindingContext as AggiungiVoti1ViewModel).NavigatedToAsync();
+            await VM.NavigatedToAsync();
         }
     }
 }

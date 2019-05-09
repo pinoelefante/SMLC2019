@@ -34,7 +34,7 @@ namespace SMLC2019.Views
             var candidato = value as Candidato;
             if (candidato == null)
                 return string.Empty;
-            return $"{candidato.cognome} {(candidato.nome!=null ? candidato.nome.First()+"." : string.Empty)}".Trim();
+            return $"{candidato.cognome} {(!string.IsNullOrEmpty(candidato.nome) ? candidato.nome.First()+"." : string.Empty)}".Trim();
         }
 
         public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
@@ -55,6 +55,34 @@ namespace SMLC2019.Views
             }
             catch { }
             return string.Empty;
+        }
+
+        public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            throw new NotImplementedException();
+        }
+    }
+
+    public class IsNullConverter : IValueConverter
+    {
+        public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            return value == null;
+        }
+
+        public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            throw new NotImplementedException();
+        }
+    }
+
+    public class GreaterThanConverter : IValueConverter
+    {
+        public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            int than = (parameter is int) ? (int)parameter : 0;
+            int val = (int)value;
+            return val > than;
         }
 
         public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)

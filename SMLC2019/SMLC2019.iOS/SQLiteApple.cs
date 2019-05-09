@@ -27,5 +27,17 @@ namespace SMLC2019.iOS
         {
             return new SQLiteConnection(DB_PATH);
         }
+        public void DeleteDatabaseFile()
+        {
+            try
+            {
+                File.Delete(DB_PATH);
+                Console.WriteLine("Database deleted");
+            }
+            catch
+            {
+                Console.WriteLine("Database not deleted");
+            }
+        }
     }
 }

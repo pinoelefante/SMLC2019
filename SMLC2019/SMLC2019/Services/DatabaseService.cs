@@ -13,6 +13,7 @@ namespace pinoelefante.Services
     public interface ISQLite
     {
         SQLiteConnection GetConnection();
+        void DeleteDatabaseFile();
     }
 
     public class DatabaseService
@@ -44,11 +45,18 @@ namespace pinoelefante.Services
             }
             CreateDatabase();
         }
-        public void SaveItem<T>(T item)
+        public bool SaveItem<T>(T item)
         {
             using (var conn = GetConnection())
             {
-                conn.InsertOrReplace(item);
+                try
+                {
+                    return conn.Insert(item) > 0;
+                }
+                catch
+                {
+                    return false;
+                }
             }
         }
         public void SaveItems<T>(IEnumerable<T> list)

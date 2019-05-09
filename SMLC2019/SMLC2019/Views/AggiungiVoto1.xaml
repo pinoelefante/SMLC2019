@@ -2,12 +2,17 @@
 <ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              x:Class="SMLC2019.Views.AggiungiVoto1"
+             xmlns:ffimage="clr-namespace:FFImageLoading.Forms;assembly=FFImageLoading.Forms"
+             xmlns:ffimaget="clr-namespace:FFImageLoading.Transformations;assembly=FFImageLoading.Transformations"
              xmlns:views="clr-namespace:SMLC2019.Views"
+             Visual="Material"
              Title="Aggiungi 1">
     <ContentPage.Resources>
         <views:StringImageSourceConverter x:Key="StringImageSourceConverter" />
         <views:ListNameConverter x:Key="ListNameConverter" />
         <views:UnixTimestampTimeConverter x:Key="UnixTimestampTimeConverter" />
+        <views:IsNullConverter x:Key="IsNullConverter" />
+        <views:GreaterThanConverter x:Key="GreaterThanConverter" />
     </ContentPage.Resources>
     <Grid>
         <Grid.RowDefinitions>
@@ -20,7 +25,8 @@
         <StackLayout x:Name="altreSchedeContainer"
                      Grid.Row="0"
                      HorizontalOptions="Center"
-                     Padding="5" />
+                     Padding="5"
+                     Orientation="Horizontal"/>
 
         <!-- Inserimento voti -->
         <Grid Grid.Row="1"
@@ -31,15 +37,23 @@
             </Grid.ColumnDefinitions>
 
             <!-- Immagine del partito -->
-            <Image Grid.Column="0"
-                   BackgroundColor="DarkGray"
-                   Source="{Binding PartitoSelezionato.logo, Mode=TwoWay}"
-                   Aspect="AspectFit"
-                   HeightRequest="150">
-                <Image.GestureRecognizers>
+            <ffimage:CachedImage Grid.Column="0"
+                                 Source="{Binding PartitoSelezionato.logo}"
+                                 Aspect="AspectFit"
+                                 BackgroundColor="DarkGray"
+                                 HeightRequest="150">
+                <ffimage:CachedImage.GestureRecognizers>
                     <TapGestureRecognizer Tapped="ApriPickerPartito" />
-                </Image.GestureRecognizers>
-            </Image>
+                </ffimage:CachedImage.GestureRecognizers>
+                <ffimage:CachedImage.Triggers>
+                    <DataTrigger TargetType="ffimage:CachedImage" Binding="{Binding PartitoSelezionato, Converter={StaticResource IsNullConverter}}" Value="True">
+                        <Setter Property="BackgroundColor" Value="DarkGray" />
+                    </DataTrigger>
+                    <DataTrigger TargetType="ffimage:CachedImage" Binding="{Binding PartitoSelezionato, Converter={StaticResource IsNullConverter}}" Value="False">
+                        <Setter Property="BackgroundColor" Value="Transparent" />
+                    </DataTrigger>
+                </ffimage:CachedImage.Triggers>
+            </ffimage:CachedImage>
             
             <Picker x:Name="pickerPartito"
                     Grid.Column="0"
@@ -58,10 +72,14 @@
                 <Picker Grid.Row="0"
                         BackgroundColor="Aqua"
                         ItemsSource="{Binding ElencoCandidatiMaschi}"
+                        IsEnabled="False"
                         SelectedItem="{Binding MaschioSelezionato, Mode=TwoWay}">
                     <Picker.Triggers>
-                        <DataTrigger TargetType="Picker" Binding="{Binding PartitoSelezionato}" Value="{x:Null}">
+                        <DataTrigger TargetType="Picker" Binding="{Binding PartitoSelezionato, Converter={StaticResource IsNullConverter}}" Value="True">
                             <Setter Property="IsEnabled" Value="False" />
+                        </DataTrigger>
+                        <DataTrigger TargetType="Picker" Binding="{Binding PartitoSelezionato, Converter={StaticResource IsNullConverter}}" Value="False">
+                            <Setter Property="IsEnabled" Value="True" />
                         </DataTrigger>
                     </Picker.Triggers>
                 </Picker>
@@ -69,10 +87,14 @@
                 <Picker Grid.Row="1"
                         BackgroundColor="LightPink"
                         ItemsSource="{Binding ElencoCandidatiFemmine}"
+                        IsEnabled="False"
                         SelectedItem="{Binding FemminaSelezionata, Mode=TwoWay}">
                     <Picker.Triggers>
-                        <DataTrigger TargetType="Picker" Binding="{Binding PartitoSelezionato}" Value="{x:Null}">
+                        <DataTrigger TargetType="Picker" Binding="{Binding PartitoSelezionato, Converter={StaticResource IsNullConverter}}" Value="True">
                             <Setter Property="IsEnabled" Value="False" />
+                        </DataTrigger>
+                        <DataTrigger TargetType="Picker" Binding="{Binding PartitoSelezionato, Converter={StaticResource IsNullConverter}}" Value="False">
+                            <Setter Property="IsEnabled" Value="True" />
                         </DataTrigger>
                     </Picker.Triggers>
                 </Picker>
@@ -80,14 +102,26 @@
                 <Button Grid.Row="2"
                         HorizontalOptions="Center"
                         Text="Aggiungi"
-                        Command="{Binding AggiungiCommand}"/>
+                        IsEnabled="False"
+                        Command="{Binding AggiungiCommand}">
+                    <Button.Triggers>
+                        <DataTrigger TargetType="Button" Binding="{Binding PartitoSelezionato, Converter={StaticResource IsNullConverter}}" Value="True">
+                            <Setter Property="IsEnabled" Value="False"/>
+                        </DataTrigger>
+
+                        <DataTrigger TargetType="Button" Binding="{Binding PartitoSelezionato, Converter={StaticResource IsNullConverter}}" Value="False">
+                            <Setter Property="IsEnabled" Value="True"/>
+                        </DataTrigger>
+                    </Button.Triggers>
+                </Button>
             </Grid>
         </Grid>
         
         <!-- Ultimi voti inseriti -->
         <ListView Grid.Row="2"
                   Margin="5"
-                  ItemsSource="{Binding UltimiVoti}">
+                  ItemsSource="{Binding UltimiVoti}"
+                  x:Name="listVoti">
             <ListView.Header>
                 <Label Text="{Binding LimiteVotiVisualizzati, StringFormat='Ultimi {0} voti inseriti'}"/>
             </ListView.Header>
@@ -103,10 +137,19 @@
                                 <ColumnDefinition Width="2.5*" />
                                 <ColumnDefinition Width="2*" />
                             </Grid.ColumnDefinitions>
-                            <Image Grid.Column="0" Source="{Binding Partito.logo}" Margin="0,0,10,0" />
-                            <Image Grid.Column="1" Source="{Binding Maschio.foto}"  />
+                            <ffimage:CachedImage Grid.Column="0" Source="{Binding Partito.logo}" Margin="0,0,10,0" />
+                            <ffimage:CachedImage Grid.Column="1" Source="{Binding Maschio.foto}">
+                                <ffimage:CachedImage.Transformations>
+                                    <ffimaget:CircleTransformation />
+                                </ffimage:CachedImage.Transformations>
+                            </ffimage:CachedImage>
                             <Label Grid.Column="2" Text="{Binding Maschio, Converter={StaticResource ListNameConverter}}" HorizontalTextAlignment="Start" VerticalOptions="Center" />
-                            <Image Grid.Column="3" Source="{Binding Femmina.foto}" />
+
+                            <ffimage:CachedImage Grid.Column="3" Source="{Binding Femmina.foto}">
+                                <ffimage:CachedImage.Transformations>
+                                    <ffimaget:CircleTransformation />
+                                </ffimage:CachedImage.Transformations>
+                            </ffimage:CachedImage>
                             <Label Grid.Column="4" Text="{Binding Femmina, Converter={StaticResource ListNameConverter}}" HorizontalTextAlignment="Start" VerticalOptions="Center" />
                             <Label Grid.Column="5" Text="{Binding Voto.tempo, Converter={StaticResource UnixTimestampTimeConverter}}" HorizontalTextAlignment="End" VerticalOptions="Center" Margin="0,0,10,0" FontAttributes="Italic" />
                         </Grid>
@@ -116,26 +159,39 @@
         </ListView>
 
         <!-- Bottoni -->
-        <Grid Grid.Row="3"
-              Padding="5">
+        <Grid Grid.Row="3" Padding="5">
             <Grid.ColumnDefinitions>
-                <ColumnDefinition />
-                <ColumnDefinition />
-                <ColumnDefinition />
-                <ColumnDefinition />
+                <ColumnDefinition Width="1*" />
+                <ColumnDefinition Width="2*"/>
+                <ColumnDefinition Width="1*"/>
             </Grid.ColumnDefinitions>
 
             <Button Grid.Column="0"
-                    Text="Canc" />
+                    IsVisible="False"
+                    Text="Cancella">
+                <Button.Triggers>
+                    <DataTrigger Binding="{Binding Source={x:Reference listVoti}, Path=SelectedItem, Converter={StaticResource IsNullConverter}}" Value="False" TargetType="Button">
+                        <Setter Property="IsVisible" Value="True" />
+                    </DataTrigger>
+                </Button.Triggers>
+            </Button>
 
-            <Button Grid.Column="1"
-                    Text="Aggiorna"
-                    IsEnabled="{Binding IsAssetsToLoad}"/>
+            <Label Grid.Column="1"
+                   Text="{Binding VotiCaricare, StringFormat='Voti da caricare: {0}'}"
+                   FontAttributes="Italic"
+                   FontSize="Small"
+                   HorizontalTextAlignment="Center"
+                   VerticalTextAlignment="Center" />
 
-            <Button Grid.Column="3"
-                    Text="Invia" />
+            <Button Grid.Column="2"
+                    IsVisible="False"
+                    Text="Invia">
+                <Button.Triggers>
+                    <DataTrigger TargetType="Button" Binding="{Binding VotiCaricare, Converter={StaticResource GreaterThanConverter}, ConverterParameter=0}" Value="True">
+                        <Setter Property="IsVisible" Value="True"/>
+                    </DataTrigger>
+                </Button.Triggers>
+            </Button>
         </Grid>
-
-        
     </Grid>
 </ContentPage>

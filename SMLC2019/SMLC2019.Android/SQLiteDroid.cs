@@ -33,5 +33,18 @@ namespace SMLC2019.Droid
         {
             return new SQLiteConnection(DATABASE_PATH);
         }
+
+        public void DeleteDatabaseFile()
+        {
+            try
+            {
+                File.Delete(DATABASE_PATH);
+                Console.WriteLine("Database deleted");
+            }
+            catch
+            {
+                Console.WriteLine("Database not deleted");
+            }
+        }
     }
 }

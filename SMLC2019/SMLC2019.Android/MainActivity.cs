@@ -16,6 +16,7 @@ namespace SMLC2019.Droid
         protected override void OnCreate(Bundle savedInstanceState)
         {
             Forms.SetFlags("CollectionView_Experimental");
+            FFImageLoading.Forms.Platform.CachedImageRenderer.Init(enableFastRenderer:true);
 
             TabLayoutResource = Resource.Layout.Tabbar;
             ToolbarResource = Resource.Layout.Toolbar;
