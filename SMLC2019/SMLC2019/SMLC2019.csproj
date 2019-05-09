@@ -43,7 +43,9 @@
   </ItemGroup>
 
   <ItemGroup>
+    <PackageReference Include="MvvmLightLibsStd10" Version="5.4.1.1" />
     <PackageReference Include="Newtonsoft.Json" Version="12.0.2" />
+    <PackageReference Include="Plugin.UserDialogs" Version="1.0.0" />
     <PackageReference Include="sqlite-net-pcl" Version="1.5.231" />
     <PackageReference Include="Xamarin.FFImageLoading" Version="2.4.9.961" />
     <PackageReference Include="Xamarin.FFImageLoading.Forms" Version="2.4.9.961" />

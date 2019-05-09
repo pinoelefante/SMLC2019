@@ -6,7 +6,8 @@
              xmlns:ffimaget="clr-namespace:FFImageLoading.Transformations;assembly=FFImageLoading.Transformations"
              xmlns:views="clr-namespace:SMLC2019.Views"
              Visual="Material"
-             Title="Aggiungi 1">
+             Title="Aggiungi 1"
+             BindingContext="{Binding Source={StaticResource Locator}, Path=AggiungiVoti1ViewModel}">
     <ContentPage.Resources>
         <views:StringImageSourceConverter x:Key="StringImageSourceConverter" />
         <views:ListNameConverter x:Key="ListNameConverter" />
@@ -121,6 +122,10 @@
         <ListView Grid.Row="2"
                   Margin="5"
                   ItemsSource="{Binding UltimiVoti}"
+                  SelectedItem="{Binding VotoSelezionato, Mode=TwoWay}"
+                  IsPullToRefreshEnabled="True"
+                  RefreshCommand="{Binding AggiornaVotiCommand}"
+                  Refreshing="ListVoti_Refreshing"
                   x:Name="listVoti">
             <ListView.Header>
                 <Label Text="{Binding LimiteVotiVisualizzati, StringFormat='Ultimi {0} voti inseriti'}"/>
@@ -168,7 +173,8 @@
 
             <Button Grid.Column="0"
                     IsVisible="False"
-                    Text="Cancella">
+                    Text="Cancella"
+                    Command="{Binding CancellaVotoCommand}">
                 <Button.Triggers>
                     <DataTrigger Binding="{Binding Source={x:Reference listVoti}, Path=SelectedItem, Converter={StaticResource IsNullConverter}}" Value="False" TargetType="Button">
                         <Setter Property="IsVisible" Value="True" />

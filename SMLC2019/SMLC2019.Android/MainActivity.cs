@@ -7,6 +7,7 @@ using Android.Views;
 using Android.Widget;
 using Android.OS;
 using Xamarin.Forms;
+using Acr.UserDialogs;
 
 namespace SMLC2019.Droid
 {
@@ -17,6 +18,7 @@ namespace SMLC2019.Droid
         {
             Forms.SetFlags("CollectionView_Experimental");
             FFImageLoading.Forms.Platform.CachedImageRenderer.Init(enableFastRenderer:true);
+            UserDialogs.Init(this);
 
             TabLayoutResource = Resource.Layout.Tabbar;
             ToolbarResource = Resource.Layout.Toolbar;

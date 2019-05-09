@@ -1,4 +1,5 @@
-﻿using pinoelefante.Services;
+﻿using GalaSoft.MvvmLight.Command;
+using pinoelefante.Services;
 using SMLC2019.Models;
 using SMLC2019.Services;
 using System;
@@ -23,44 +24,66 @@ namespace SMLC2019.ViewModels
         private Partito partitoSelezionato = null;
         private Candidato maschioSelezionato, femminaSelezionata, emptyCandidato = new Candidato() { cognome = "(Nessun voto)" };
         private List<Candidato> altreSchede;
-        private ICommand aggiungiCommand;
+        private ICommand aggiungiCommand, cancellaVoto, inviaVoti, aggiornaVoti;
+        private VotoWrapped votoSelezionato;
 
-        public int NumeroSeggio { get => seggio; set => Set(ref seggio, value); }
+        public int NumeroSeggio { get => seggio; set => SetMT(ref seggio, value); }
         public ObservableCollection<Partito> ElencoPartiti { get; } = new ObservableCollection<Partito>();
         public Partito PartitoSelezionato
         {
             get => partitoSelezionato;
             set
             {
-                Set(ref partitoSelezionato, value);
+                SetMT(ref partitoSelezionato, value);
                 CaricaCandidati(value);
             }
         }
         public ObservableCollection<Candidato> ElencoCandidatiMaschi { get; } = new ObservableCollection<Candidato>();
         public ObservableCollection<Candidato> ElencoCandidatiFemmine { get; } = new ObservableCollection<Candidato>();
-        public Candidato MaschioSelezionato { get => maschioSelezionato; set => Set(ref maschioSelezionato, value == emptyCandidato ? null : value); }
-        public Candidato FemminaSelezionata { get => femminaSelezionata; set => Set(ref femminaSelezionata, value == emptyCandidato ? null : value); }
-        public List<Candidato> AltreSchede { get => altreSchede; set => Set(ref altreSchede, value); }
+        public Candidato MaschioSelezionato { get => maschioSelezionato; set => SetMT(ref maschioSelezionato, value == emptyCandidato ? null : value); }
+        public Candidato FemminaSelezionata { get => femminaSelezionata; set => SetMT(ref femminaSelezionata, value == emptyCandidato ? null : value); }
+        public List<Candidato> AltreSchede { get => altreSchede; set => SetMT(ref altreSchede, value); }
         public ObservableCollection<VotoWrapped> UltimiVoti { get; } = new ObservableCollection<VotoWrapped>();
-        public int VotiCaricare { get => votiCaricare; set => Set(ref votiCaricare, value); }
+        public int VotiCaricare { get => votiCaricare; set => SetMT(ref votiCaricare, value); }
         public int LimiteVotiVisualizzati { get; set; } = 20;
+        public VotoWrapped VotoSelezionato { get => votoSelezionato; set => SetMT(ref votoSelezionato, value); }
         public ICommand AggiungiCommand =>
             aggiungiCommand ??
-            (aggiungiCommand = new Command(() =>
+            (aggiungiCommand = new RelayCommand(() =>
             {
                 if (PartitoSelezionato == null)
                     return;
-
                 InserisciScheda(PartitoSelezionato.id, MaschioSelezionato?.id, FemminaSelezionata?.id);
             }));
-
-        public AggiungiVoti1ViewModel()
+        public ICommand CancellaVotoCommand =>
+            cancellaVoto ??
+            (cancellaVoto = new RelayCommand(async () =>
+            {
+                if (VotoSelezionato == null)
+                    return;
+                if (!await DisplayBasicAlert("Vuoi eliminare il voto?", "Conferma eliminazione", "Si", "No"))
+                    return;
+                if (db.Delete(VotoSelezionato.Voto))
+                {
+                    //TODO: verificare che il voto non sia stato già inviato, nel caso richiedere la cancellazione
+                    Device.BeginInvokeOnMainThread(() =>
+                    {
+                        UltimiVoti.Remove(VotoSelezionato);
+                        VotoSelezionato = null;
+                    });
+                }
+                else
+                    ShowToast("Voto non eliminato");
+            }));
+        public ICommand AggiornaVotiCommand =>
+            aggiornaVoti ??
+            (aggiornaVoti = new RelayCommand(CaricaUltimiVoti));
+        public AggiungiVoti1ViewModel(ServerAPI s, DatabaseService d)
         {
             elencoCandidati = new Dictionary<Partito, List<Candidato>>();
-            api = new ServerAPI();
+            api = s;
             api.Endpoint = "https://pinoelefante.altervista.org/smlc19/endpoint.php";
-            var sqlite = DependencyService.Get<ISQLite>();
-            db = new DatabaseService(sqlite);
+            db = d;
         }
 
         public override async Task NavigatedToAsync(object o = null)
@@ -169,7 +192,7 @@ namespace SMLC2019.ViewModels
             }
             else
             {
-                // Mostrare errore
+                ShowToast("Il voto non è stato inserito");
             }
         }
 

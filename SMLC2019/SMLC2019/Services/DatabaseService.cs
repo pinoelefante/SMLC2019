@@ -70,11 +70,11 @@ namespace pinoelefante.Services
                 });
             }
         }
-        public void Delete<T>(T item)
+        public bool Delete<T>(T item)
         {
             using (var con = GetConnection())
             {
-                con.Delete(item);
+                return con.Delete(item) > 0;
             }
         }
         

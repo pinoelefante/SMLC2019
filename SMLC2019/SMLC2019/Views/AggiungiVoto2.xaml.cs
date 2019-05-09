@@ -16,8 +16,6 @@ namespace SMLC2019.Views
         public AggiungiVoto2()
         {
             InitializeComponent();
-
-            BindingContext = new AggiungiVoti2ViewModel();
         }
         private AggiungiVoti2ViewModel VM => this.BindingContext as AggiungiVoti2ViewModel;
 

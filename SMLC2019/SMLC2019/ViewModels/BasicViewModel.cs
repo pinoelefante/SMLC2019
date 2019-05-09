@@ -1,4 +1,6 @@
-﻿using System;
+﻿using Acr.UserDialogs;
+using GalaSoft.MvvmLight;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
@@ -8,9 +10,8 @@ using Xamarin.Forms;
 
 namespace SMLC2019.ViewModels
 {
-    public class BasicViewModel : INotifyPropertyChanged
+    public class BasicViewModel : ViewModelBase, INotifyPropertyChanged
     {
-        public event PropertyChangedEventHandler PropertyChanged;
 
         public virtual async Task NavigatedToAsync(object o = null)
         {
@@ -22,13 +23,23 @@ namespace SMLC2019.ViewModels
             await Task.CompletedTask;
         }
 
-        public void Set<T>(ref T t, T value, [CallerMemberName]string fieldName="")
+        public void SetMT<T>(ref T t, T value, [CallerMemberName]string fieldName="")
         {
             t = value;
             Device.BeginInvokeOnMainThread(() =>
             {
-                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(fieldName));
+                RaisePropertyChanged(fieldName);
             });
+        }
+
+        public async Task<bool> DisplayBasicAlert(string message, string title="", string confirm="OK", string cancel="Annulla")
+        {
+            return await App.Current.MainPage.DisplayAlert(title, message, confirm, cancel);
+        }
+
+        public void ShowToast(string message)
+        {
+            UserDialogs.Instance.Toast(message, TimeSpan.FromSeconds(3));
         }
     }
 }

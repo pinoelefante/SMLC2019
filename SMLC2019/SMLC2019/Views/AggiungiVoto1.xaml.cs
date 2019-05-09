@@ -17,9 +17,6 @@ namespace SMLC2019.Views
         public AggiungiVoto1()
         {
             InitializeComponent();
-
-            BindingContext = new AggiungiVoti1ViewModel();
-
             VM.PropertyChanged += VM_PropertyChanged;
         }
 
@@ -77,6 +74,11 @@ namespace SMLC2019.Views
                     catch { }
                 });
             }
+        }
+
+        private void ListVoti_Refreshing(object sender, EventArgs e)
+        {
+            listVoti.IsRefreshing = false;
         }
     }
 }
