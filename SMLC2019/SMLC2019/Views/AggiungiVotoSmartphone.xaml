@@ -1,20 +1,13 @@
 ﻿<?xml version="1.0" encoding="utf-8" ?>
 <ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
-             x:Class="SMLC2019.Views.AggiungiVoto1"
+             x:Class="SMLC2019.Views.AggiungiVotoSmartphone"
              xmlns:ffimage="clr-namespace:FFImageLoading.Forms;assembly=FFImageLoading.Forms"
              xmlns:ffimaget="clr-namespace:FFImageLoading.Transformations;assembly=FFImageLoading.Transformations"
              xmlns:views="clr-namespace:SMLC2019.Views"
-             Visual="Material"
-             Title="Aggiungi 1"
-             BindingContext="{Binding Source={StaticResource Locator}, Path=AggiungiVoti1ViewModel}">
-    <ContentPage.Resources>
-        <views:StringImageSourceConverter x:Key="StringImageSourceConverter" />
-        <views:ListNameConverter x:Key="ListNameConverter" />
-        <views:UnixTimestampTimeConverter x:Key="UnixTimestampTimeConverter" />
-        <views:IsNullConverter x:Key="IsNullConverter" />
-        <views:GreaterThanConverter x:Key="GreaterThanConverter" />
-    </ContentPage.Resources>
+             Title="Aggiungi"
+             BindingContext="{Binding Source={StaticResource Locator}, Path=AggiungiVotiSmartphone}">
+    
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto" />
@@ -22,12 +15,39 @@
             <RowDefinition />
             <RowDefinition Height="Auto" />
         </Grid.RowDefinitions>
-        
-        <StackLayout x:Name="altreSchedeContainer"
-                     Grid.Row="0"
-                     HorizontalOptions="Center"
-                     Padding="5"
-                     Orientation="Horizontal"/>
+
+        <Grid Grid.Row="0" ColumnSpacing="5">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto" />
+                <RowDefinition />
+            </Grid.RowDefinitions>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition />
+                <ColumnDefinition Width="Auto" />
+            </Grid.ColumnDefinitions>
+
+            <Label Text="{Binding NumeroSeggio, StringFormat='Seggio {0}'}"
+                   HorizontalOptions="Center"
+                   VerticalOptions="Center"
+                   FontAttributes="Bold"
+                   FontSize="Medium"/>
+
+            <ImageButton Grid.Row="0"
+                         Grid.Column="1"
+                         Source="twotone_settings_24"
+                         WidthRequest="40"
+                         Padding="5"
+                         Command="{Binding ApriImpostazioniCommand}"/>
+
+            <StackLayout x:Name="altreSchedeContainer"
+                         Grid.Row="1"
+                         Grid.ColumnSpan="2"
+                         Grid.Column="0"
+                         HorizontalOptions="Center"
+                         Padding="5"
+                         Spacing="10"
+                         Orientation="Horizontal"/>
+        </Grid>
 
         <!-- Inserimento voti -->
         <Grid Grid.Row="1"
@@ -73,48 +93,20 @@
                 <Picker Grid.Row="0"
                         BackgroundColor="Aqua"
                         ItemsSource="{Binding ElencoCandidatiMaschi}"
-                        IsEnabled="False"
-                        SelectedItem="{Binding MaschioSelezionato, Mode=TwoWay}">
-                    <Picker.Triggers>
-                        <DataTrigger TargetType="Picker" Binding="{Binding PartitoSelezionato, Converter={StaticResource IsNullConverter}}" Value="True">
-                            <Setter Property="IsEnabled" Value="False" />
-                        </DataTrigger>
-                        <DataTrigger TargetType="Picker" Binding="{Binding PartitoSelezionato, Converter={StaticResource IsNullConverter}}" Value="False">
-                            <Setter Property="IsEnabled" Value="True" />
-                        </DataTrigger>
-                    </Picker.Triggers>
-                </Picker>
+                        IsEnabled="{Binding PartitoSelezionato, Converter={StaticResource NotIsNullConverter}}"
+                        SelectedItem="{Binding MaschioSelezionato, Mode=TwoWay}" />
 
                 <Picker Grid.Row="1"
                         BackgroundColor="LightPink"
                         ItemsSource="{Binding ElencoCandidatiFemmine}"
-                        IsEnabled="False"
-                        SelectedItem="{Binding FemminaSelezionata, Mode=TwoWay}">
-                    <Picker.Triggers>
-                        <DataTrigger TargetType="Picker" Binding="{Binding PartitoSelezionato, Converter={StaticResource IsNullConverter}}" Value="True">
-                            <Setter Property="IsEnabled" Value="False" />
-                        </DataTrigger>
-                        <DataTrigger TargetType="Picker" Binding="{Binding PartitoSelezionato, Converter={StaticResource IsNullConverter}}" Value="False">
-                            <Setter Property="IsEnabled" Value="True" />
-                        </DataTrigger>
-                    </Picker.Triggers>
-                </Picker>
+                        IsEnabled="{Binding PartitoSelezionato, Converter={StaticResource NotIsNullConverter}}"
+                        SelectedItem="{Binding FemminaSelezionata, Mode=TwoWay}" />
 
                 <Button Grid.Row="2"
                         HorizontalOptions="Center"
                         Text="Aggiungi"
-                        IsEnabled="False"
-                        Command="{Binding AggiungiCommand}">
-                    <Button.Triggers>
-                        <DataTrigger TargetType="Button" Binding="{Binding PartitoSelezionato, Converter={StaticResource IsNullConverter}}" Value="True">
-                            <Setter Property="IsEnabled" Value="False"/>
-                        </DataTrigger>
-
-                        <DataTrigger TargetType="Button" Binding="{Binding PartitoSelezionato, Converter={StaticResource IsNullConverter}}" Value="False">
-                            <Setter Property="IsEnabled" Value="True"/>
-                        </DataTrigger>
-                    </Button.Triggers>
-                </Button>
+                        IsEnabled="{Binding PartitoSelezionato, Converter={StaticResource NotIsNullConverter}}"
+                        Command="{Binding AggiungiCommand}" />
             </Grid>
         </Grid>
         
@@ -172,32 +164,25 @@
             </Grid.ColumnDefinitions>
 
             <Button Grid.Column="0"
-                    IsVisible="False"
+                    IsVisible="{Binding VotoSelezionato, Converter={StaticResource NotIsNullConverter}}"
                     Text="Cancella"
-                    Command="{Binding CancellaVotoCommand}">
-                <Button.Triggers>
-                    <DataTrigger Binding="{Binding Source={x:Reference listVoti}, Path=SelectedItem, Converter={StaticResource IsNullConverter}}" Value="False" TargetType="Button">
-                        <Setter Property="IsVisible" Value="True" />
-                    </DataTrigger>
-                </Button.Triggers>
-            </Button>
+                    Command="{Binding CancellaVotoCommand}"/>
 
             <Label Grid.Column="1"
                    Text="{Binding VotiCaricare, StringFormat='Voti da caricare: {0}'}"
+                   IsVisible="{Binding VotiCaricare, Converter={StaticResource GreaterThanConverter}, ConverterParameter=0}"
                    FontAttributes="Italic"
                    FontSize="Small"
                    HorizontalTextAlignment="Center"
                    VerticalTextAlignment="Center" />
 
-            <Button Grid.Column="2"
-                    IsVisible="False"
-                    Text="Invia">
-                <Button.Triggers>
-                    <DataTrigger TargetType="Button" Binding="{Binding VotiCaricare, Converter={StaticResource GreaterThanConverter}, ConverterParameter=0}" Value="True">
-                        <Setter Property="IsVisible" Value="True"/>
-                    </DataTrigger>
-                </Button.Triggers>
-            </Button>
+            <Button x:Name="bottoneInviaVoti"
+                    Grid.Column="2"
+                    IsVisible="{Binding VotiCaricare, Converter={StaticResource GreaterThanConverter}, ConverterParameter=0}"
+                    Text="Invia"
+                    IsEnabled="False"
+                    Command="{Binding InviaVotiCommand}"/>
+            
         </Grid>
     </Grid>
 </ContentPage>

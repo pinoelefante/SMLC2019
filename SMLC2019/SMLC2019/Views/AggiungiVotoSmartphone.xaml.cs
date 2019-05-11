@@ -12,9 +12,9 @@ using Xamarin.Forms.Xaml;
 namespace SMLC2019.Views
 {
     [XamlCompilation(XamlCompilationOptions.Compile)]
-    public partial class AggiungiVoto1 : ContentPage
+    public partial class AggiungiVotoSmartphone : ContentPage
     {
-        public AggiungiVoto1()
+        public AggiungiVotoSmartphone()
         {
             InitializeComponent();
             VM.PropertyChanged += VM_PropertyChanged;
@@ -27,10 +27,12 @@ namespace SMLC2019.Views
                 case nameof(VM.AltreSchede):
                     PopolaAltreSchede();
                     break;
+                case nameof(VM.IsInviandoVoti):
+                    break;
             }
         }
 
-        private AggiungiVoti1ViewModel VM => this.BindingContext as AggiungiVoti1ViewModel;
+        private AggiungiVotiSmartphone VM => this.BindingContext as AggiungiVotiSmartphone;
         private async void ApriPickerPartito(object sender, EventArgs e)
         {
             if (!VM.ElencoPartiti.Any())
@@ -61,9 +63,9 @@ namespace SMLC2019.Views
                 b.Clicked += (s, e) =>
                   {
                       if (c.sesso.Equals("N", StringComparison.CurrentCultureIgnoreCase) || c.sesso.Equals("M", StringComparison.CurrentCultureIgnoreCase))
-                          VM.InserisciScheda(c.partito, c.id, null);
+                          VM.InserisciAltraScheda(c.partito, c.id, null, c.cognome);
                       else if (c.sesso.Equals("F", StringComparison.CurrentCultureIgnoreCase))
-                          VM.InserisciScheda(c.partito, null, c.id);
+                          VM.InserisciAltraScheda(c.partito, null, c.id, c.cognome);
                   };
                 Device.BeginInvokeOnMainThread(() =>
                 {
@@ -79,6 +81,14 @@ namespace SMLC2019.Views
         private void ListVoti_Refreshing(object sender, EventArgs e)
         {
             listVoti.IsRefreshing = false;
+        }
+
+        private void AbilitaBottoneInvia(bool stato)
+        {
+            Device.BeginInvokeOnMainThread(() =>
+            {
+                bottoneInviaVoti.IsEnabled = stato;
+            });
         }
     }
 }

@@ -2,11 +2,8 @@
 <TabbedPage xmlns="http://xamarin.com/schemas/2014/forms"
             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
             xmlns:views="clr-namespace:SMLC2019.Views"
-            x:Class="SMLC2019.Views.MainPage"
-            Visual="Material">
+            x:Class="SMLC2019.Views.MainPageTablet">
 
-    <TabbedPage.Children>
-        <views:AggiungiVoto1 />
-        <views:AggiungiVoto2 />
-    </TabbedPage.Children>
+    <views:AggiungiVotoTablet />
+    
 </TabbedPage>

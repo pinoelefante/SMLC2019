@@ -1,31 +1,38 @@
 ﻿using GalaSoft.MvvmLight.Command;
 using pinoelefante.Services;
+using Rg.Plugins.Popup.Services;
 using SMLC2019.Models;
 using SMLC2019.Services;
+using SMLC2019.Views;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Diagnostics;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Input;
+using Xamarin.Essentials;
 using Xamarin.Forms;
 
 namespace SMLC2019.ViewModels
 {
-    public class AggiungiVoti1ViewModel : BasicViewModel
+    public class AggiungiVotiSmartphone : BasicViewModel
     {
         private ServerAPI api;
         private DatabaseService db;
+        private Configuration conf;
 
         protected Dictionary<Partito, List<Candidato>> elencoCandidati;
         private int votiCaricare, seggio;
+        private long tempoUltimoInvio;
         private Partito partitoSelezionato = null;
         private Candidato maschioSelezionato, femminaSelezionata, emptyCandidato = new Candidato() { cognome = "(Nessun voto)" };
         private List<Candidato> altreSchede;
-        private ICommand aggiungiCommand, cancellaVoto, inviaVoti, aggiornaVoti;
+        private ICommand aggiungiCommand, cancellaVoto, inviaVoti, aggiornaVoti, apriImpostazioni;
         private VotoWrapped votoSelezionato;
+        private bool isInviandoVoti = false;
 
         public int NumeroSeggio { get => seggio; set => SetMT(ref seggio, value); }
         public ObservableCollection<Partito> ElencoPartiti { get; } = new ObservableCollection<Partito>();
@@ -35,6 +42,8 @@ namespace SMLC2019.ViewModels
             set
             {
                 SetMT(ref partitoSelezionato, value);
+                MaschioSelezionato = null;
+                FemminaSelezionata = null;
                 CaricaCandidati(value);
             }
         }
@@ -47,6 +56,7 @@ namespace SMLC2019.ViewModels
         public int VotiCaricare { get => votiCaricare; set => SetMT(ref votiCaricare, value); }
         public int LimiteVotiVisualizzati { get; set; } = 20;
         public VotoWrapped VotoSelezionato { get => votoSelezionato; set => SetMT(ref votoSelezionato, value); }
+        public bool IsInviandoVoti { get => isInviandoVoti; set => SetMT(ref isInviandoVoti, value); }
         public ICommand AggiungiCommand =>
             aggiungiCommand ??
             (aggiungiCommand = new RelayCommand(() =>
@@ -61,15 +71,23 @@ namespace SMLC2019.ViewModels
             {
                 if (VotoSelezionato == null)
                     return;
-                if (!await DisplayBasicAlert("Vuoi eliminare il voto?", "Conferma eliminazione", "Si", "No"))
+                bool remoteDelete = VotoSelezionato.Voto.tempo <= tempoUltimoInvio;
+                if (!await DisplayBasicAlert("Vuoi eliminare il voto?\n"+(remoteDelete ? "Il voto sarà anche eliminato dai voti già inviati": ""), "Conferma eliminazione", "Si", "No"))
                     return;
                 if (db.Delete(VotoSelezionato.Voto))
                 {
-                    //TODO: verificare che il voto non sia stato già inviato, nel caso richiedere la cancellazione
+                    if(remoteDelete)
+                    {
+                        //TODO: richiedere la cancellazione del voto online
+                    }
+                    else
+                        VotiCaricare--;
                     Device.BeginInvokeOnMainThread(() =>
                     {
                         UltimiVoti.Remove(VotoSelezionato);
                         VotoSelezionato = null;
+                        if(!UltimiVoti.Any())
+                            CaricaUltimiVoti();
                     });
                 }
                 else
@@ -78,18 +96,45 @@ namespace SMLC2019.ViewModels
         public ICommand AggiornaVotiCommand =>
             aggiornaVoti ??
             (aggiornaVoti = new RelayCommand(CaricaUltimiVoti));
-        public AggiungiVoti1ViewModel(ServerAPI s, DatabaseService d)
+
+        public ICommand ApriImpostazioniCommand => apriImpostazioni ?? (apriImpostazioni = new RelayCommand(() => ApriImpostazioni()));
+        public ICommand InviaVotiCommand => inviaVoti ?? (inviaVoti = new RelayCommand(() => InviaVoti()));
+        public AggiungiVotiSmartphone(ServerAPI s, DatabaseService d, Configuration c, IToast t) : base(t)
         {
             elencoCandidati = new Dictionary<Partito, List<Candidato>>();
             api = s;
-            api.Endpoint = "https://pinoelefante.altervista.org/smlc19/endpoint.php";
             db = d;
+            conf = c;
+            c.PropertyChanged += Configuration_PropertyChanged;
+            api.Endpoint = "https://pinoelefante.altervista.org/smlc19/endpoint.php";
+            
+            Inizializza();
+        }
+
+        private void Configuration_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
+        {
+            if(conf.Seggio != NumeroSeggio)
+            {
+                NumeroSeggio = conf.Seggio;
+                CaricaUltimiVoti();
+                tempoUltimoInvio = conf.UltimoInvio;
+            }
         }
 
         public override async Task NavigatedToAsync(object o = null)
         {
+            if (NumeroSeggio <= 0)
+                ApriImpostazioni();
+            await Task.CompletedTask;
+        }
+
+        private async void Inizializza()
+        {
             if (!elencoCandidati.Any())
                 await CaricaAssets();
+            NumeroSeggio = conf.Seggio;
+            tempoUltimoInvio = conf.UltimoInvio;
+            VotiCaricare = db.GetVotiDaCaricareCount(NumeroSeggio, tempoUltimoInvio);
             CaricaUltimiVoti();
         }
 
@@ -165,7 +210,12 @@ namespace SMLC2019.ViewModels
                     AggiungiUltimoVoto(v);
             });
         }
-
+        public async void InserisciAltraScheda(int partito, int? maschio, int? femmina, string nome="")
+        {
+            if (!await DisplayBasicAlert($"Sei sicuro/a di voler inserire la scheda{(string.IsNullOrEmpty(nome) ? string.Empty : $" {nome}")}?", "Conferma inserimento", "Si", "No"))
+                return;
+            InserisciScheda(partito, maschio, femmina);
+        }
         public void InserisciScheda(int partito, int? maschio, int? femmina)
         {
             Voto v = new Voto()
@@ -189,6 +239,7 @@ namespace SMLC2019.ViewModels
 
                     VotiCaricare++;
                 });
+                ShowToast("Aggiunto");
             }
             else
             {
@@ -211,6 +262,42 @@ namespace SMLC2019.ViewModels
                     UltimiVoti.RemoveAt(LimiteVotiVisualizzati-1);
                 UltimiVoti.Insert(0, vw);
             });
+        }
+
+        
+
+        public async void InviaVoti(bool showErrors = true)
+        {
+            if(Connectivity.NetworkAccess != NetworkAccess.Internet)
+            {
+                if(showErrors)
+                    ShowToast("Connessione non disponibile");
+                return;
+            }
+            IsInviandoVoti = true;
+            int seggio = NumeroSeggio;
+            var voti = db.GetVotiDaCaricare(seggio, tempoUltimoInvio);
+            if (!voti.Any())
+                return;
+            var res = await api.AggiungiVotiAsync(voti);
+            if(res)
+            {
+                ShowToast("Voti caricati");
+                tempoUltimoInvio = voti.Max(x => x.tempo);
+                if (!conf.SalvaUltimoInvio(seggio, tempoUltimoInvio) && showErrors)
+                    ShowToast("Tempo non salvato. Non chiudere l'applicazione");
+            }
+            else
+            {
+                if(showErrors)
+                    ShowToast("ERRORE: voti non caricati");
+            }
+            VotiCaricare = db.GetVotiDaCaricareCount(seggio, tempoUltimoInvio);
+            IsInviandoVoti = false;
+        }
+        public async void ApriImpostazioni()
+        {
+            await PopupNavigation.Instance.PushAsync(new SettingsPopup(), true);
         }
     }
 

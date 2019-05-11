@@ -18,7 +18,7 @@ namespace pinoelefante.Services
 
     public class DatabaseService
     {
-        private ISQLite conMngr;
+        private readonly ISQLite conMngr;
         public DatabaseService(ISQLite sqlite)
         {
             conMngr = sqlite;
@@ -90,7 +90,7 @@ namespace pinoelefante.Services
             }
             catch
             {
-                return default(T);
+                return default;
             }
         }
         public bool DeleteByPk<T>(object pk)
@@ -139,6 +139,21 @@ namespace pinoelefante.Services
                                         .OrderByDescending(x => x.tempo)
                                         .Take(limit)
                                         .ToList();
+            }
+        }
+        public List<Voto> GetVotiDaCaricare(int seggio, long last)
+        {
+            using(var conn = GetConnection())
+            {
+                return conn.Table<Voto>().Where(x => x.seggio == seggio && x.tempo > last).ToList();
+            }
+        }
+
+        public int GetVotiDaCaricareCount(int seggio, long last)
+        {
+            using(var conn = GetConnection())
+            {
+                return conn.Table<Voto>().Where(x => x.seggio == seggio && x.tempo > last).Count();
             }
         }
     }

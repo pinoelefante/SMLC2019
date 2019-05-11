@@ -2,6 +2,7 @@
 <Application xmlns="http://xamarin.com/schemas/2014/forms"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              x:Class="SMLC2019.App"
+             xmlns:views="clr-namespace:SMLC2019.Views"
              xmlns:services="clr-namespace:SMLC2019.Services">
 
     <Application.Resources>
@@ -14,6 +15,14 @@
             </Style>
 
             <services:Locator x:Key="Locator" />
+
+            <views:StringImageSourceConverter x:Key="StringImageSourceConverter" />
+            <views:ListNameConverter x:Key="ListNameConverter" />
+            <views:UnixTimestampTimeConverter x:Key="UnixTimestampTimeConverter" />
+            <views:IsNullConverter x:Key="IsNullConverter" />
+            <views:GreaterThanConverter x:Key="GreaterThanConverter" />
+            <views:NotIsNullConverter x:Key="NotIsNullConverter" />
+            <views:NotBoolConverter x:Key="NotBoolConverter" />
         </ResourceDictionary>
     </Application.Resources>
     

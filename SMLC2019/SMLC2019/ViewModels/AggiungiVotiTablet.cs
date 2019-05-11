@@ -9,9 +9,9 @@ using SMLC2019.Services;
 
 namespace SMLC2019.ViewModels
 {
-    public class AggiungiVoti2ViewModel : AggiungiVoti1ViewModel
+    public class AggiungiVotiTablet : AggiungiVotiSmartphone
     {
-        public AggiungiVoti2ViewModel(ServerAPI s, DatabaseService d) : base(s, d)
+        public AggiungiVotiTablet(ServerAPI s, DatabaseService d, Configuration c, IToast t) : base(s, d, c, t)
         {
         }
 

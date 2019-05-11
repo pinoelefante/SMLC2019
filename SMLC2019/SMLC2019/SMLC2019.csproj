@@ -45,21 +45,35 @@
   <ItemGroup>
     <PackageReference Include="MvvmLightLibsStd10" Version="5.4.1.1" />
     <PackageReference Include="Newtonsoft.Json" Version="12.0.2" />
-    <PackageReference Include="Plugin.UserDialogs" Version="1.0.0" />
+    <PackageReference Include="Rg.Plugins.Popup" Version="1.1.5.188" />
     <PackageReference Include="sqlite-net-pcl" Version="1.5.231" />
     <PackageReference Include="Xamarin.FFImageLoading" Version="2.4.9.961" />
     <PackageReference Include="Xamarin.FFImageLoading.Forms" Version="2.4.9.961" />
     <PackageReference Include="Xamarin.FFImageLoading.Transformations" Version="2.4.9.961" />
     <PackageReference Include="Xamarin.Forms" Version="4.0.0.394984-pre10" />  
-    <PackageReference Include="Xamarin.Essentials" Version="1.1.0" />  
-    <PackageReference Include="Xamarin.Forms.Visual.Material" Version="4.0.0.394984-pre10" />
+    <PackageReference Include="Xamarin.Essentials" Version="1.1.0" />
   </ItemGroup>
 
   <ItemGroup>
-    <EmbeddedResource Update="Views\AggiungiVoto1.xaml">
+    <Compile Update="Views\AggiungiVotoTablet.xaml.cs">
+      <DependentUpon>AggiungiVotoTablet.xaml</DependentUpon>
+    </Compile>
+    <Compile Update="Views\AggiungiVotoSmartphone.xaml.cs">
+      <DependentUpon>AggiungiVotoSmartphone.xaml</DependentUpon>
+    </Compile>
+    <Compile Update="Views\MainPageTablet.xaml.cs">
+      <DependentUpon>MainPageTablet.xaml</DependentUpon>
+    </Compile>
+  </ItemGroup>
+
+  <ItemGroup>
+    <EmbeddedResource Update="Views\AggiungiVotoSmartphone.xaml">
       <Generator>MSBuild:UpdateDesignTimeXaml</Generator>
     </EmbeddedResource>
-    <EmbeddedResource Update="Views\AggiungiVoto2.xaml">
+    <EmbeddedResource Update="Views\AggiungiVotoTablet.xaml">
+      <Generator>MSBuild:UpdateDesignTimeXaml</Generator>
+    </EmbeddedResource>
+    <EmbeddedResource Update="Views\SettingsPopup.xaml">
       <Generator>MSBuild:UpdateDesignTimeXaml</Generator>
     </EmbeddedResource>
   </ItemGroup>

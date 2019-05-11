@@ -1,5 +1,5 @@
-﻿using Acr.UserDialogs;
-using GalaSoft.MvvmLight;
+﻿using GalaSoft.MvvmLight;
+using SMLC2019.Services;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -12,7 +12,11 @@ namespace SMLC2019.ViewModels
 {
     public class BasicViewModel : ViewModelBase, INotifyPropertyChanged
     {
-
+        private readonly IToast toast;
+        public BasicViewModel(IToast toast)
+        {
+            this.toast = toast;
+        }
         public virtual async Task NavigatedToAsync(object o = null)
         {
             await Task.CompletedTask;
@@ -39,7 +43,7 @@ namespace SMLC2019.ViewModels
 
         public void ShowToast(string message)
         {
-            UserDialogs.Instance.Toast(message, TimeSpan.FromSeconds(3));
+            toast.ShowToast(message);
         }
     }
 }

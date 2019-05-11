@@ -15,19 +15,22 @@ namespace SMLC2019.Services
             SimpleIoc.Default.Register(() => DependencyService.Get<ISQLite>());
             SimpleIoc.Default.Register<ServerAPI>();
             SimpleIoc.Default.Register<DatabaseService>();
-
+            SimpleIoc.Default.Register<Configuration>();
+            SimpleIoc.Default.Register(() => DependencyService.Get<IToast>());
             RegisterViewModels();
         }
 
         static void RegisterViewModels()
         {
-            SimpleIoc.Default.Register<AggiungiVoti1ViewModel>();
-            SimpleIoc.Default.Register<AggiungiVoti2ViewModel>();
+            SimpleIoc.Default.Register<AggiungiVotiSmartphone>();
+            SimpleIoc.Default.Register<AggiungiVotiTablet>();
+            SimpleIoc.Default.Register<SettingsViewModel>();
         }
 
         public static T GetService<T>() => SimpleIoc.Default.GetInstance<T>();
 
-        public AggiungiVoti1ViewModel AggiungiVoti1ViewModel => GetService<AggiungiVoti1ViewModel>();
-        public AggiungiVoti2ViewModel AggiungiVoti2ViewModel => GetService<AggiungiVoti2ViewModel>();
+        public AggiungiVotiSmartphone AggiungiVotiSmartphone => GetService<AggiungiVotiSmartphone>();
+        public AggiungiVotiTablet AggiungiVotiTablet => GetService<AggiungiVotiTablet>();
+        public SettingsViewModel SettingsViewModel => GetService<SettingsViewModel>();
     }
 }

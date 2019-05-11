@@ -4,6 +4,7 @@ using System.Linq;
 
 using Foundation;
 using UIKit;
+using Xamarin.Forms;
 
 namespace SMLC2019.iOS
 {
@@ -22,6 +23,8 @@ namespace SMLC2019.iOS
         //
         public override bool FinishedLaunching(UIApplication app, NSDictionary options)
         {
+            Forms.SetFlags("CollectionView_Experimental");
+            Rg.Plugins.Popup.Popup.Init();
             FFImageLoading.Forms.Platform.CachedImageRenderer.Init();
             global::Xamarin.Forms.Forms.Init();
             LoadApplication(new App());

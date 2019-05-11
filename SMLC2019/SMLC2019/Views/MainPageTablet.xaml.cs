@@ -5,9 +5,9 @@ using Xamarin.Forms.Xaml;
 
 namespace SMLC2019.Views
 {
-    public partial class MainPage : TabbedPage
+    public partial class MainPageTablet : TabbedPage
     {
-        public MainPage()
+        public MainPageTablet()
         {
             InitializeComponent();
         }
