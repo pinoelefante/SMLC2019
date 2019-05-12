@@ -23,7 +23,7 @@ namespace SMLC2019.iOS
         //
         public override bool FinishedLaunching(UIApplication app, NSDictionary options)
         {
-            Forms.SetFlags("CollectionView_Experimental");
+            Forms.SetFlags("CollectionView_Experimental", "Shell_Experimental");
             Rg.Plugins.Popup.Popup.Init();
             FFImageLoading.Forms.Platform.CachedImageRenderer.Init();
             global::Xamarin.Forms.Forms.Init();

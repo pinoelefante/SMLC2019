@@ -6,6 +6,7 @@ using Xamarin.Forms;
 using System.Linq;
 using pinoelefante.Services;
 using SMLC2019.Services;
+using SMLC2019.Extensions;
 
 namespace SMLC2019.ViewModels
 {

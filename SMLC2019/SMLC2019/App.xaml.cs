@@ -14,10 +14,13 @@ namespace SMLC2019
             InitializeComponent();
 
             var conf = Locator.GetService<Configuration>();
+            /*
             if (conf.ModalitaVisiva == "Smartphone")
                 MainPage = new AggiungiVotoSmartphone();
             else
                 MainPage = new MainPageTablet();
+            */
+            MainPage = new MainPageSmartphone();
         }
 
         protected override void OnStart()

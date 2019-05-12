@@ -15,6 +15,7 @@ using System.Threading.Tasks;
 using System.Windows.Input;
 using Xamarin.Essentials;
 using Xamarin.Forms;
+using SMLC2019.Extensions;
 
 namespace SMLC2019.ViewModels
 {
@@ -178,10 +179,10 @@ namespace SMLC2019.ViewModels
             var assets = await api.GetAssetsAsync();
             if (assets == null)
                 return;
-            Populate(assets.partiti, assets.candidati);
+            Populate(assets.Partiti, assets.Candidati);
             
-            db.SaveItems(assets.partiti);
-            db.SaveItems(assets.candidati);
+            db.SaveItems(assets.Partiti);
+            db.SaveItems(assets.Candidati);
         }
         
         private void Populate(IEnumerable<Partito> partiti, IEnumerable<Candidato> candidati)
@@ -298,19 +299,6 @@ namespace SMLC2019.ViewModels
         public async void ApriImpostazioni()
         {
             await PopupNavigation.Instance.PushAsync(new SettingsPopup(), true);
-        }
-    }
-
-    public static class ObservableCollectionExtension
-    {
-        public static void AddRange<T>(this ObservableCollection<T> collection, IEnumerable<T> items, bool clear=false)
-        {
-            if (items == null)
-                return;
-            if (clear)
-                collection.Clear();
-            foreach(var item in items)
-                collection.Add(item);
         }
     }
 

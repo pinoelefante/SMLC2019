@@ -24,12 +24,13 @@ namespace SMLC2019.Services
         public async Task<Assets> GetAssetsAsync()
         {
             var response = await SendRequestAsync<Assets>($"{Endpoint}?action=GetAssets", HttpMethod.GET);
-            return response == null ? null : response.content;
+            return response?.Content;
         }
         
-        public async Task GetVotiPerSeggioAsync()
+        public async Task<RisultatiElettorali> GetVotiPerSeggioAsync()
         {
-            var response = await SendRequestAsync<Assets>($"{Endpoint}?action=GetAssets", HttpMethod.GET);
+            var response = await SendRequestAsync<RisultatiElettorali>($"{Endpoint}?action=RisultatiPerSeggio", HttpMethod.GET);
+            return response?.Content;
         }
 
         public void GetVoti(int seggio)
@@ -40,9 +41,7 @@ namespace SMLC2019.Services
         public async Task<bool> AggiungiVotiAsync(List<Voto> voti)
         {
             var response = await SendRequestAsync<bool>($"{Endpoint}?action=AggiungiVoti", HttpMethod.JSON, voti);
-            if (response == null)
-                return false;
-            return response.content;
+            return response == null ? false : response.Content;
         }
 
         public void SetAuthentication(string username, string password)
@@ -50,7 +49,7 @@ namespace SMLC2019.Services
             webservice.SetHTTPBasicAuthentication(username, password);
         }
 
-        private async Task<RootMessage<T>> SendRequestAsync<T>(string url, HttpMethod method, object parameters = null, byte[] file = null, bool send_later = false)
+        private async Task<RootMessage<T>> SendRequestAsync<T>(string url, HttpMethod method, object parameters = null, byte[] file = null)
         {
             
             var res = await webservice.SendRequestAsync(url, method, parameters, file);
@@ -74,13 +73,49 @@ namespace SMLC2019.Services
     
     public class Assets
     {
-        public List<Partito> partiti { get; set; }
-        public List<Candidato> candidati { get; set; }
+        [JsonProperty(PropertyName = "partiti")]
+        public List<Partito> Partiti { get; set; }
+        [JsonProperty(PropertyName = "candidati")]
+        public List<Candidato> Candidati { get; set; }
     }
 
-    public class RootMessage<Content>
+    public class RootMessage<ContentType>
     {
-        public string time { get; set; }
-        public Content content { get; set; }
+        [JsonProperty(PropertyName = "time")]
+        public string Time { get; set; }
+        [JsonProperty(PropertyName = "content")]
+        public ContentType Content { get; set; }
+    }
+
+    public class Consigliere
+    {
+        public int id { get; set; }
+        public string nome { get; set; }
+        public string cognome { get; set; }
+        public string sesso { get; set; }
+        public int partito { get; set; }
+        public string foto { get; set; }
+        public int seggio { get; set; }
+        public int voti { get; set; }
+        public string nome_partito { get; set; }
+        public string logo { get; set; }
+    }
+
+    public class ListaPolitica
+    {
+        public int id { get; set; }
+        public string nome { get; set; }
+        public string sindaco { get; set; }
+        public string sindaco_foto { get; set; }
+        public string logo { get; set; }
+        public int ordine { get; set; }
+        public int seggio { get; set; }
+        public int voti { get; set; }
+    }
+
+    public class RisultatiElettorali
+    {
+        public List<Consigliere> consiglieri { get; set; }
+        public List<ListaPolitica> liste { get; set; }
     }
 }

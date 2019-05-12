@@ -124,7 +124,9 @@
     <AndroidResource Include="Resources\mipmap-xxxhdpi\launcher_foreground.png" />
     <AndroidResource Include="Resources\drawable\xamarin_logo.png" />
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <AndroidResource Include="Resources\drawable\refresh128.png" />
+  </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\SMLC2019\SMLC2019.csproj">
       <Project>{8B177AEA-5A4A-4D85-929E-686A9E78BD8C}</Project>
