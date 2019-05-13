@@ -3,7 +3,6 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              x:Class="SMLC2019.Views.AggiungiVotoSmartphone"
              xmlns:ffimage="clr-namespace:FFImageLoading.Forms;assembly=FFImageLoading.Forms"
-             xmlns:ffimaget="clr-namespace:FFImageLoading.Transformations;assembly=FFImageLoading.Transformations"
              xmlns:views="clr-namespace:SMLC2019.Views"
              Title="Aggiungi"
              BindingContext="{Binding Source={StaticResource Locator}, Path=AggiungiVotiSmartphone}">
@@ -13,7 +12,6 @@
             <RowDefinition Height="Auto" />
             <RowDefinition Height="Auto" />
             <RowDefinition />
-            <RowDefinition Height="Auto" />
         </Grid.RowDefinitions>
 
         <Grid Grid.Row="0" ColumnSpacing="5">
@@ -109,8 +107,10 @@
                         Command="{Binding AggiungiCommand}" />
             </Grid>
         </Grid>
-        
+
+        <views:UltimiVotiView Grid.Row="2" />
         <!-- Ultimi voti inseriti -->
+        <!--
         <ListView Grid.Row="2"
                   Margin="5"
                   ItemsSource="{Binding UltimiVoti}"
@@ -154,8 +154,10 @@
                 </DataTemplate>
             </ListView.ItemTemplate>
         </ListView>
+        -->
 
         <!-- Bottoni -->
+        <!--
         <Grid Grid.Row="3" Padding="5">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="1*" />
@@ -184,5 +186,6 @@
                     Command="{Binding InviaVotiCommand}"/>
             
         </Grid>
+        -->
     </Grid>
 </ContentPage>

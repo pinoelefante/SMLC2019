@@ -17,6 +17,7 @@
                 <ffimage:CachedImage Grid.Row="0"
                                      HorizontalOptions="Center"
                                      Source="{Binding logo}"
+                                     HeightRequest="100"
                                      Aspect="AspectFit" />
                 <Label Grid.Row="1"
                                Text="{Binding nome}"

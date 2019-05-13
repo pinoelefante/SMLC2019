@@ -5,5 +5,12 @@
             x:Class="SMLC2019.Views.MainPageTablet">
 
     <views:AggiungiVotoTablet />
-    
+
+    <ContentPage Title="Registro"
+                 BindingContext="{Binding Source={StaticResource Locator}, Path=AggiungiVotiTablet}">
+        <views:UltimiVotiView />
+    </ContentPage>
+
+    <views:RisultatiPage />
+
 </TabbedPage>

@@ -78,17 +78,5 @@ namespace SMLC2019.Views
             }
         }
 
-        private void ListVoti_Refreshing(object sender, EventArgs e)
-        {
-            listVoti.IsRefreshing = false;
-        }
-
-        private void AbilitaBottoneInvia(bool stato)
-        {
-            Device.BeginInvokeOnMainThread(() =>
-            {
-                bottoneInviaVoti.IsEnabled = stato;
-            });
-        }
     }
 }

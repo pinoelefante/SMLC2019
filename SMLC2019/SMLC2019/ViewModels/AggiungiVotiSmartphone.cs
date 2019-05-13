@@ -79,7 +79,11 @@ namespace SMLC2019.ViewModels
                 {
                     if(remoteDelete)
                     {
-                        //TODO: richiedere la cancellazione del voto online
+                        var res = await api.CancellaVoto(VotoSelezionato.Voto.seggio, VotoSelezionato.Voto.tempo);
+                        if(!res)
+                        {
+                            //TODO: aggiungere il voto alla coda di voti da cancellare
+                        }
                     }
                     else
                         VotiCaricare--;

@@ -44,6 +44,23 @@ namespace SMLC2019.Services
             return response == null ? false : response.Content;
         }
 
+        public async Task<bool> Ping()
+        {
+            var res = await SendRequestAsync<bool>($"{Endpoint}/endpoint.php?action=Ping", HttpMethod.GET);
+            return res == null ? false : res.Content;
+        }
+
+        public async Task<bool> CancellaVoto(int seggio, long tempo)
+        {
+            var p = new List<KeyValuePair<string, string>>()
+            {
+                new KeyValuePair<string, string>("seggio", seggio.ToString()),
+                new KeyValuePair<string, string>("tempo", tempo.ToString()),
+            };
+            var res = await SendRequestAsync<bool>($"{Endpoint}/endpoint.php?action=CancellaVoto", HttpMethod.POST, p);
+            return res == null ? false : res.Content;
+        }
+
         public void SetAuthentication(string username, string password)
         {
             webservice.SetHTTPBasicAuthentication(username, password);

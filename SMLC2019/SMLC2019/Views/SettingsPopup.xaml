@@ -95,11 +95,15 @@
             <Label Text="Password" Grid.Row="4" VerticalOptions="Center" />
             <Entry Grid.Row="4" Grid.Column="1" Text="{Binding Config.Password, Mode=TwoWay}" IsPassword="True" />
 
+            <Button Text="Verifica dati" Grid.Row="5" Grid.ColumnSpan="2" HorizontalOptions="Center" Command="{Binding VerificaDatiCommand}" />
+
+            <Button Text="Cancella vecchi dati" Grid.Row="6" Grid.ColumnSpan="2" HorizontalOptions="Center" Command="{Binding CancellaDBCommand}" />
+
         </Grid>
 
         <Button Grid.Row="2"
                 Text="Chiudi"
                 IsEnabled="{Binding Source={x:Reference pickerSeggio}, Path=SelectedItem, Converter={StaticResource GreaterThanConverter}, ConverterParameter=0}"
-                Clicked="ClosePopup"/>
+                Command="{Binding ChiudiCommand}"/>
     </Grid>
 </popup:PopupPage>

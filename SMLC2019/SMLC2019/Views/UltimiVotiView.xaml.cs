@@ -1,7 +1,4 @@
-﻿using Rg.Plugins.Popup.Pages;
-using Rg.Plugins.Popup.Services;
-using SMLC2019.ViewModels;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -13,12 +10,15 @@ using Xamarin.Forms.Xaml;
 namespace SMLC2019.Views
 {
     [XamlCompilation(XamlCompilationOptions.Compile)]
-    public partial class SettingsPopup : PopupPage
+    public partial class UltimiVotiView : ContentView
     {
-        public SettingsPopup()
+        public UltimiVotiView()
         {
             InitializeComponent();
         }
-        private SettingsViewModel VM => this.BindingContext as SettingsViewModel;
+        private void ListVoti_Refreshing(object sender, EventArgs e)
+        {
+            listVoti.IsRefreshing = false;
+        }
     }
 }
