@@ -15,6 +15,7 @@ namespace SMLC2019.Services
         private int seggio;
         private string username, password, endpoint, mode = "Tablet";
         private long ultimoInvio;
+        private ServerAPI api;
         public int Seggio
         {
             get => seggio;
@@ -31,16 +32,25 @@ namespace SMLC2019.Services
         public long UltimoInvio { get => ultimoInvio; set => Set(ref ultimoInvio, value); }
         public string ModalitaVisiva { get => mode; set => Set(ref mode, value); }
 
-        public Configuration()
+        public Configuration(ServerAPI a)
         {
+            api = a;
             Inizializza(false);
             LeggiConfigurazione();
+            InizializzaAPI();
         }
         private void Inizializza(bool skipSeggio = true)
         {
             if(!skipSeggio)
                 Seggio = GetUltimoSeggio();
             UltimoInvio = GetUltimoInvio(Seggio);
+        }
+        public void InizializzaAPI()
+        {
+            if(!string.IsNullOrEmpty(Endpoint))
+                api.Endpoint = Endpoint;
+            if (!string.IsNullOrEmpty(Username) && !string.IsNullOrEmpty(Password))
+                api.SetAuthentication(Username, Password);
         }
 
         private void LeggiConfigurazione()

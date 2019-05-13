@@ -107,7 +107,6 @@ namespace SMLC2019.ViewModels
             db = d;
             conf = c;
             c.PropertyChanged += Configuration_PropertyChanged;
-            api.Endpoint = "https://pinoelefante.altervista.org/smlc19/endpoint.php";
             
             Inizializza();
         }

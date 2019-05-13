@@ -31,8 +31,6 @@
             <x:Int32>8</x:Int32>
             <x:Int32>9</x:Int32>
             <x:Int32>10</x:Int32>
-            <x:Int32>11</x:Int32>
-            <x:Int32>12</x:Int32>
         </x:Array>
     </popup:PopupPage.Resources>
     
@@ -75,6 +73,27 @@
                     <x:String>Smartphone</x:String>
                 </Picker.Items>
             </Picker>
+
+            <Label Text="Endpoint" Grid.Row="2" VerticalOptions="Center" />
+            <Grid Grid.Row="2" Grid.Column="1" ColumnSpacing="0">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition />
+                    <ColumnDefinition Width="Auto" />
+                </Grid.ColumnDefinitions>
+                <Entry Text="{Binding Config.Endpoint, Mode=TwoWay}"
+                       Placeholder="https://www.indirizzo.it/cartella"
+                       HorizontalOptions="StartAndExpand"/>
+                <Label Grid.Column="1"
+                       Text="/endpoint.php"
+                       TextColor="Gray"
+                       VerticalOptions="Center" />
+            </Grid>
+
+            <Label Text="Username" Grid.Row="3" VerticalOptions="Center" />
+            <Entry Grid.Row="3" Grid.Column="1" Text="{Binding Config.Username, Mode=TwoWay}" />
+
+            <Label Text="Password" Grid.Row="4" VerticalOptions="Center" />
+            <Entry Grid.Row="4" Grid.Column="1" Text="{Binding Config.Password, Mode=TwoWay}" IsPassword="True" />
 
         </Grid>
 

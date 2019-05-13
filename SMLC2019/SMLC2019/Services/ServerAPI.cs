@@ -23,13 +23,13 @@ namespace SMLC2019.Services
 
         public async Task<Assets> GetAssetsAsync()
         {
-            var response = await SendRequestAsync<Assets>($"{Endpoint}?action=GetAssets", HttpMethod.GET);
+            var response = await SendRequestAsync<Assets>($"{Endpoint}/endpoint.php?action=GetAssets", HttpMethod.GET);
             return response?.Content;
         }
         
         public async Task<RisultatiElettorali> GetVotiPerSeggioAsync()
         {
-            var response = await SendRequestAsync<RisultatiElettorali>($"{Endpoint}?action=RisultatiPerSeggio", HttpMethod.GET);
+            var response = await SendRequestAsync<RisultatiElettorali>($"{Endpoint}/endpoint.php?action=RisultatiPerSeggio", HttpMethod.GET);
             return response?.Content;
         }
 
@@ -40,7 +40,7 @@ namespace SMLC2019.Services
 
         public async Task<bool> AggiungiVotiAsync(List<Voto> voti)
         {
-            var response = await SendRequestAsync<bool>($"{Endpoint}?action=AggiungiVoti", HttpMethod.JSON, voti);
+            var response = await SendRequestAsync<bool>($"{Endpoint}/endpoint.php?action=AggiungiVoti", HttpMethod.JSON, voti);
             return response == null ? false : response.Content;
         }
 
