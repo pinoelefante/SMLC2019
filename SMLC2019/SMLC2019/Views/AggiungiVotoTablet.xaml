@@ -8,8 +8,6 @@
              Title="Aggiungi"
              BindingContext="{Binding Source={StaticResource Locator}, Path=AggiungiVotiTablet}">
     <ContentPage.Resources>
-        <views:ListName2Converter x:Key="ListName2Converter" />
-
         <DataTemplate x:Key="PartitoTemplate">
             <Grid>
                 <Grid.RowDefinitions>

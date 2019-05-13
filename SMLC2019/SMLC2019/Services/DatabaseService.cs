@@ -90,7 +90,7 @@ namespace pinoelefante.Services
             }
             catch
             {
-                return default;
+                return default(T);
             }
         }
         public bool DeleteByPk<T>(object pk)

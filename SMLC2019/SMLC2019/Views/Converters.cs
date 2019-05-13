@@ -133,4 +133,27 @@ namespace SMLC2019.Views
             throw new NotImplementedException();
         }
     }
+
+    public class CandidatoBackgroundColorConverter : IValueConverter
+    {
+        public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            var candidato = value as Candidato;
+            if (candidato == null)
+                return null;
+            switch(candidato.sesso.ToUpper())
+            {
+                case "M":
+                    return Color.Aqua;
+                case "F":
+                    return Color.LightPink;
+            }
+            return Color.Transparent;
+        }
+
+        public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            throw new NotImplementedException();
+        }
+    }
 }

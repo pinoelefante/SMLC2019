@@ -18,10 +18,21 @@ namespace SMLC2019.ViewModels
         private readonly ServerAPI api;
         private readonly DatabaseService db;
         private RelayCommand caricaVotiCmd;
+        private int seggioSelezionato = 0;
+
+        public int SeggioSelezionato
+        {
+            get => seggioSelezionato;
+            set
+            {
+                SetMT(ref seggioSelezionato, value);
+                CaricaVoti();
+            }
+        }
         public RelayCommand CaricaVotiCommand => caricaVotiCmd ?? (caricaVotiCmd = new RelayCommand(CaricaVoti));
         public ObservableCollection<RisultatoPartitoWrapped> RisultatiListe { get; } = new ObservableCollection<RisultatoPartitoWrapped>();
-        
-
+        public ObservableCollection<RisultatoCandidatoWrapped> RisultatiCandidati { get; } = new ObservableCollection<RisultatoCandidatoWrapped>();
+        public RisultatiElettorali Risultati { get; set; }
         public RisultatiViewModel(IToast toast, ServerAPI a, DatabaseService d) : base(toast)
         {
             api = a;
@@ -41,7 +52,17 @@ namespace SMLC2019.ViewModels
                 ShowToast("Si è verificato un errore durante il caricamento dei voti");
             else
             {
-                GeneraVotiListeTotale(res);
+                Risultati = res;
+                if (SeggioSelezionato < 1)
+                {
+                    GeneraVotiListeTotale(res);
+                    GeneraVotiCandidatiTotale(res);
+                }
+                else
+                {
+                    GeneraVotiListeSeggio(res, SeggioSelezionato);
+                    GeneraVotiCandidatiSeggio(res, SeggioSelezionato);
+                }
             }
         }
 
@@ -83,8 +104,64 @@ namespace SMLC2019.ViewModels
             });
             
         }
+        private void GeneraVotiCandidatiTotale(RisultatiElettorali voti)
+        {
+            Dictionary<int, int> votiCounts = new Dictionary<int, int>();
+            foreach(var c in voti.consiglieri)
+            {
+                if(votiCounts.ContainsKey(c.id))
+                {
+                    var oldVoti = votiCounts[c.id];
+                    votiCounts.Remove(c.id);
+                    votiCounts.Add(c.id, oldVoti + c.voti);
+                }
+                else
+                    votiCounts.Add(c.id, c.voti);
+            }
+            List<RisultatoCandidatoWrapped> res = new List<RisultatoCandidatoWrapped>();
+            foreach(var kv in votiCounts)
+            {
+                Candidato c = db.GetByPk<Candidato>(kv.Key);
+                if(c != null)
+                    res.Add(new RisultatoCandidatoWrapped(c, kv.Value));
+            }
+            res = res.OrderByDescending(x => x.Voti).ToList();
 
-
+            Device.BeginInvokeOnMainThread(() =>
+            {
+                RisultatiCandidati.AddRange(res, true);
+            });
+        }
+        private void GeneraVotiListeSeggio(RisultatiElettorali res, int seggio)
+        {
+            var liste = res.liste.Where(x => x.seggio == seggio).OrderByDescending(x => x.voti).ToList();
+            var listeWrapped = new List<RisultatoPartitoWrapped>();
+            foreach(var l in liste)
+            {
+                Partito p = db.GetByPk<Partito>(l.id);
+                if(p != null)
+                    listeWrapped.Add(new RisultatoPartitoWrapped(p, l.voti));
+            }
+            Device.BeginInvokeOnMainThread(() =>
+            {
+                RisultatiListe.AddRange(listeWrapped, true);
+            });
+        }
+        private void GeneraVotiCandidatiSeggio(RisultatiElettorali res, int seggio)
+        {
+            var candidati = res.consiglieri.Where(x => x.seggio == seggio).OrderByDescending(x => x.voti);
+            var candidatiWrapped = new List<RisultatoCandidatoWrapped>();
+            foreach(var c in candidati)
+            {
+                Candidato candidato = db.GetByPk<Candidato>(c.id);
+                if(candidato != null)
+                    candidatiWrapped.Add(new RisultatoCandidatoWrapped(candidato, c.voti));
+            }
+            Device.BeginInvokeOnMainThread(() =>
+            {
+                RisultatiCandidati.AddRange(candidatiWrapped, true);
+            });
+        }
     }
 
     public class RisultatoPartitoWrapped
@@ -96,6 +173,16 @@ namespace SMLC2019.ViewModels
         {
             Partito = p;
             Voti = voti;
+        }
+    }
+    public class RisultatoCandidatoWrapped
+    {
+        public Candidato Candidato { get; }
+        public int Voti { get; }
+        public RisultatoCandidatoWrapped(Candidato c, int v)
+        {
+            Candidato = c;
+            Voti = v;
         }
     }
 }

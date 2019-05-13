@@ -18,11 +18,13 @@
 
             <views:StringImageSourceConverter x:Key="StringImageSourceConverter" />
             <views:ListNameConverter x:Key="ListNameConverter" />
+            <views:ListName2Converter x:Key="ListName2Converter" />
             <views:UnixTimestampTimeConverter x:Key="UnixTimestampTimeConverter" />
             <views:IsNullConverter x:Key="IsNullConverter" />
             <views:GreaterThanConverter x:Key="GreaterThanConverter" />
             <views:NotIsNullConverter x:Key="NotIsNullConverter" />
             <views:NotBoolConverter x:Key="NotBoolConverter" />
+            <views:CandidatoBackgroundColorConverter x:Key="CandidatoBGColorConverter" />
         </ResourceDictionary>
     </Application.Resources>
     
