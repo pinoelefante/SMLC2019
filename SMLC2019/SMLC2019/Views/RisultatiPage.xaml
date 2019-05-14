@@ -6,9 +6,6 @@
              xmlns:ffimaget="clr-namespace:FFImageLoading.Transformations;assembly=FFImageLoading.Transformations"
              BindingContext="{Binding Source={StaticResource Locator}, Path=RisultatiViewModel}"
              Title="Risultati">
-    <ContentPage.ToolbarItems>
-        <ToolbarItem Text="Aggiorna" IconImageSource="refresh128.png" Command="{Binding CaricaVotiCommand}" />
-    </ContentPage.ToolbarItems>
     <ContentPage.Resources>
         <DataTemplate x:Key="CandidatoVoto">
             <Grid Padding="5"
@@ -91,14 +88,23 @@
             <RowDefinition Height="2*"/>
         </Grid.RowDefinitions>
 
-        <StackLayout Orientation="Horizontal"
+        <Grid>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition />
+                <ColumnDefinition Width="Auto" />
+            </Grid.ColumnDefinitions>
+            <StackLayout Orientation="Horizontal"
                      Spacing="10"
                      HorizontalOptions="Center">
-            <Label Text="Seggio" VerticalOptions="Center" />
-            <Picker ItemsSource="{StaticResource Seggi}"
+                <Label Text="Seggio" VerticalOptions="Center" />
+                <Picker ItemsSource="{StaticResource Seggi}"
                     SelectedIndex="{Binding SeggioSelezionato, Mode=TwoWay}"
                     HorizontalOptions="Center"/>
-        </StackLayout>
+            </StackLayout>
+
+            <ImageButton Grid.Column="1" Source="refresh128.png" Command="{Binding CaricaVotiCommand}" WidthRequest="40" HeightRequest="40" Aspect="AspectFit" />
+        </Grid>
+        
         
         <Label Text="Liste"
                Grid.Row="1"

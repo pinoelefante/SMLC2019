@@ -52,6 +52,7 @@
                 <RowDefinition Height="Auto" />
                 <RowDefinition Height="Auto" />
                 <RowDefinition Height="Auto" />
+                <RowDefinition Height="Auto" />
                 <RowDefinition />
             </Grid.RowDefinitions>
             <Grid.ColumnDefinitions>
@@ -98,6 +99,8 @@
             <Button Text="Verifica dati" Grid.Row="5" Grid.ColumnSpan="2" HorizontalOptions="Center" Command="{Binding VerificaDatiCommand}" />
 
             <Button Text="Cancella vecchi dati" Grid.Row="6" Grid.ColumnSpan="2" HorizontalOptions="Center" Command="{Binding CancellaDBCommand}" />
+
+            <Button Text="Forza invio" Grid.Row="7" Grid.ColumnSpan="2" HorizontalOptions="Center" Command="{Binding ForzaInvioCommand}" />
 
         </Grid>
 

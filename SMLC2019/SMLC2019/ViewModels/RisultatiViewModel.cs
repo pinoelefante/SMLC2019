@@ -96,7 +96,7 @@ namespace SMLC2019.ViewModels
                     }
                 }
             }
-            resWrapped = resWrapped.OrderByDescending(x => x.Voti).ToList();
+            resWrapped = resWrapped.OrderByDescending(x => x.Voti).ThenBy(x => x.Partito.ordine).ToList();
 
             Device.BeginInvokeOnMainThread(() =>
             {
@@ -134,7 +134,7 @@ namespace SMLC2019.ViewModels
         }
         private void GeneraVotiListeSeggio(RisultatiElettorali res, int seggio)
         {
-            var liste = res.liste.Where(x => x.seggio == seggio).OrderByDescending(x => x.voti).ToList();
+            var liste = res.liste.Where(x => x.seggio == seggio).OrderByDescending(x => x.voti).ThenBy(x => x.ordine).ToList();
             var listeWrapped = new List<RisultatoPartitoWrapped>();
             foreach(var l in liste)
             {

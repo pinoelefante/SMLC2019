@@ -16,6 +16,7 @@ using System.Windows.Input;
 using Xamarin.Essentials;
 using Xamarin.Forms;
 using SMLC2019.Extensions;
+using System.Threading;
 
 namespace SMLC2019.ViewModels
 {
@@ -34,6 +35,7 @@ namespace SMLC2019.ViewModels
         private ICommand aggiungiCommand, cancellaVoto, inviaVoti, aggiornaVoti, apriImpostazioni;
         private VotoWrapped votoSelezionato;
         private bool isInviandoVoti = false;
+        private Timer invioTimer;
 
         public int NumeroSeggio { get => seggio; set => SetMT(ref seggio, value); }
         public ObservableCollection<Partito> ElencoPartiti { get; } = new ObservableCollection<Partito>();
@@ -82,7 +84,7 @@ namespace SMLC2019.ViewModels
                         var res = await api.CancellaVoto(VotoSelezionato.Voto.seggio, VotoSelezionato.Voto.tempo);
                         if(!res)
                         {
-                            //TODO: aggiungere il voto alla coda di voti da cancellare
+                            conf.AggiungiVotoDaEliminare(VotoSelezionato.Voto.seggio, VotoSelezionato.Voto.tempo);
                         }
                     }
                     else
@@ -113,6 +115,9 @@ namespace SMLC2019.ViewModels
             c.PropertyChanged += Configuration_PropertyChanged;
             
             Inizializza();
+
+            invioTimer = new Timer(InviaVotiBG, null, 5000, 60000);
+            
         }
 
         private void Configuration_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
@@ -254,7 +259,10 @@ namespace SMLC2019.ViewModels
         private void AggiungiUltimoVoto(Voto v)
         {
             var p = elencoCandidati.Keys.FirstOrDefault(x => x.id == v.partito);
-
+            if(p == null)
+            {
+                Console.WriteLine("Partito non trovato: " + v.partito);
+            }
             VotoWrapped vw = new VotoWrapped(v,
                 p,
                 elencoCandidati[p].FirstOrDefault(x => x.id == v.maschio),
@@ -268,10 +276,23 @@ namespace SMLC2019.ViewModels
             });
         }
 
-        
+        private void InviaVotiBG(object state)
+        {
+            lock(this)
+            {
+                Console.WriteLine("Backgroung sender: Invio voti");
+                InviaVoti(false);
+            }
+        }
 
         public async void InviaVoti(bool showErrors = true)
         {
+            if (IsInviandoVoti)
+            {
+                if (showErrors)
+                    ShowToast("Operazione già in corso");
+                return;
+            }
             if(Connectivity.NetworkAccess != NetworkAccess.Internet)
             {
                 if(showErrors)
@@ -280,21 +301,35 @@ namespace SMLC2019.ViewModels
             }
             IsInviandoVoti = true;
             int seggio = NumeroSeggio;
-            var voti = db.GetVotiDaCaricare(seggio, tempoUltimoInvio);
-            if (!voti.Any())
-                return;
-            var res = await api.AggiungiVotiAsync(voti);
-            if(res)
+
+            /* Voti da eliminare */
+            if(conf.DaEliminare.ContainsKey(seggio) && conf.DaEliminare[seggio].Any())
             {
-                ShowToast("Voti caricati");
-                tempoUltimoInvio = voti.Max(x => x.tempo);
-                if (!conf.SalvaUltimoInvio(seggio, tempoUltimoInvio) && showErrors)
-                    ShowToast("Tempo non salvato. Non chiudere l'applicazione");
+                foreach(var t in conf.DaEliminare[seggio].ToList())
+                {
+                    if (await api.CancellaVoto(seggio, t))
+                        conf.RimuoviVotoDaEliminare(seggio, t);
+                }
             }
-            else
+
+            /* Voti da caricare */
+            var voti = db.GetVotiDaCaricare(seggio, tempoUltimoInvio);
+            if (voti.Any())
             {
-                if(showErrors)
-                    ShowToast("ERRORE: voti non caricati");
+                var res = await api.AggiungiVotiAsync(voti);
+                if (res)
+                {
+                    if(showErrors)
+                        ShowToast("Voti caricati");
+                    tempoUltimoInvio = voti.Max(x => x.tempo);
+                    if (!conf.SalvaUltimoInvio(seggio, tempoUltimoInvio) && showErrors)
+                        ShowToast("Tempo non salvato. Non chiudere l'applicazione");
+                }
+                else
+                {
+                    if (showErrors)
+                        ShowToast("ERRORE: voti non caricati");
+                }
             }
             VotiCaricare = db.GetVotiDaCaricareCount(seggio, tempoUltimoInvio);
             IsInviandoVoti = false;

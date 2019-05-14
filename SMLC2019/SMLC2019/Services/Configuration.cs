@@ -31,6 +31,7 @@ namespace SMLC2019.Services
         public string Endpoint { get => endpoint; set => Set(ref endpoint, value); }
         public long UltimoInvio { get => ultimoInvio; set => Set(ref ultimoInvio, value); }
         public string ModalitaVisiva { get => mode; set => Set(ref mode, value); }
+        public Dictionary<int, List<long>> DaEliminare { get; set; }
 
         public Configuration(ServerAPI a)
         {
@@ -38,6 +39,7 @@ namespace SMLC2019.Services
             Inizializza(false);
             LeggiConfigurazione();
             InizializzaAPI();
+            LeggiDaEliminare();
         }
         private void Inizializza(bool skipSeggio = true)
         {
@@ -144,6 +146,67 @@ namespace SMLC2019.Services
                 Console.WriteLine("Tempo non salvato. Non chiudere l'applicazione");
                 return false;
             }
+        }
+        public void CancellaUltimoInvio(int start, int end)
+        {
+            for(int i=start;i<=end;i++)
+            {
+                var path = Path.Combine(FileSystem.AppDataDirectory, seggio.ToString());
+                if(File.Exists(path))
+                {
+                    try
+                    {
+                        File.Delete(path);
+                    }
+                    catch { }
+                }
+            }
+        }
+        public void LeggiDaEliminare()
+        {
+            var path = Path.Combine(FileSystem.AppDataDirectory, "eliminare");
+            try
+            {
+                var json = File.ReadAllText(path);
+                var dic = JsonConvert.DeserializeObject<Dictionary<int, List<long>>>(json);
+                DaEliminare = dic;
+            }
+            catch
+            {
+                DaEliminare = new Dictionary<int, List<long>>();
+            }
+        }
+        public void AggiungiVotoDaEliminare(int seggio, long tempo)
+        {
+            if (!DaEliminare.ContainsKey(seggio))
+                DaEliminare.Add(seggio, new List<long>());
+            DaEliminare[seggio].Add(tempo);
+
+            SalvaVotiDaEliminare();
+        }
+        private void SalvaVotiDaEliminare()
+        {
+            var json = JsonConvert.SerializeObject(DaEliminare);
+            var path = Path.Combine(FileSystem.AppDataDirectory, "eliminare");
+            try
+            {
+                File.WriteAllText(path, json);
+            }
+            catch { }
+        }
+        public void RimuoviVotoDaEliminare(int seggio, long tempo)
+        {
+            if (DaEliminare.ContainsKey(seggio) && DaEliminare[seggio].Remove(tempo))
+                SalvaVotiDaEliminare();
+        }
+        public void CancellaVotiDaEliminare()
+        {
+            var path = Path.Combine(FileSystem.AppDataDirectory, "eliminare");
+            try
+            {
+                File.Delete(path);
+            }
+            catch { }
         }
     }
 }
