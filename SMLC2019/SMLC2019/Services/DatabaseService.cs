@@ -45,6 +45,13 @@ namespace pinoelefante.Services
             }
             CreateDatabase();
         }
+        public void DropTable<T>()
+        {
+            using(var conn = GetConnection())
+            {
+                conn.DeleteAll<T>();
+            }
+        }
         public bool SaveItem<T>(T item)
         {
             using (var conn = GetConnection())

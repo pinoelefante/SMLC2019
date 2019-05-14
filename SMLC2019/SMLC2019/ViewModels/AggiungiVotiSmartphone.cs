@@ -262,6 +262,7 @@ namespace SMLC2019.ViewModels
             if(p == null)
             {
                 Console.WriteLine("Partito non trovato: " + v.partito);
+                return;
             }
             VotoWrapped vw = new VotoWrapped(v,
                 p,

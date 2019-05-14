@@ -125,7 +125,7 @@ namespace SMLC2019.ViewModels
                 if(c != null)
                     res.Add(new RisultatoCandidatoWrapped(c, kv.Value));
             }
-            res = res.OrderByDescending(x => x.Voti).ToList();
+            res = res.OrderByDescending(x => x.Voti).ThenBy(x => x.Candidato.cognome).ToList();
 
             Device.BeginInvokeOnMainThread(() =>
             {
@@ -149,7 +149,7 @@ namespace SMLC2019.ViewModels
         }
         private void GeneraVotiCandidatiSeggio(RisultatiElettorali res, int seggio)
         {
-            var candidati = res.consiglieri.Where(x => x.seggio == seggio).OrderByDescending(x => x.voti);
+            var candidati = res.consiglieri.Where(x => x.seggio == seggio).OrderByDescending(x => x.voti).ThenBy(x => x.cognome);
             var candidatiWrapped = new List<RisultatoCandidatoWrapped>();
             foreach(var c in candidati)
             {

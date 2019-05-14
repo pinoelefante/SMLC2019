@@ -67,7 +67,7 @@ namespace SMLC2019.Services
             {
                 new KeyValuePair<string, string>("seggio", seggio.ToString()),
             };
-            var res = await SendRequestAsync<bool>($"{Endpoint}/endpoint.php", HttpMethod.POST);
+            var res = await SendRequestAsync<bool>($"{Endpoint}/endpoint.php?action=CancellaVoti", HttpMethod.POST, p);
             return res == null ? false : res.Content;
         }
 
@@ -94,7 +94,6 @@ namespace SMLC2019.Services
                 Debug.WriteLine(e.Message);
                 return null;
             }
-            
         }
     }
     

@@ -6,6 +6,7 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 using System.Linq;
+using SMLC2019.Models;
 
 namespace SMLC2019.ViewModels
 {
@@ -36,8 +37,9 @@ namespace SMLC2019.ViewModels
 
         private async void CancellaDBAsync()
         {
-            if(await DisplayBasicAlert("Sei sicuro/a di voler cancellare tutti i dati inseriti?\nL'operazione è irreversibile.", "Cancellazione dati"))
-                db.DeleteDatabase();
+            if (await DisplayBasicAlert("Sei sicuro/a di voler cancellare tutti i voti inseriti?\nL'operazione è irreversibile.\n", "Cancellazione dati"))
+                db.DropTable<Voto>();
+
             Config.CancellaUltimoInvio(1, 12);
             Config.CancellaVotiDaEliminare();
         }
