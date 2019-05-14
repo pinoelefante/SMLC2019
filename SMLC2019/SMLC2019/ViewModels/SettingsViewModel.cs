@@ -7,6 +7,7 @@ using System.Collections.Generic;
 using System.Text;
 using System.Linq;
 using SMLC2019.Models;
+using Xamarin.Essentials;
 
 namespace SMLC2019.ViewModels
 {
@@ -30,29 +31,45 @@ namespace SMLC2019.ViewModels
 
         private async void ChiudiImpostazioniAsync()
         {
+            if(Config.Seggio < 1)
+            {
+                ShowToast("Selezionare un seggio");
+                return;
+            }
+            if(string.IsNullOrEmpty(Config.Endpoint) || !Uri.IsWellFormedUriString(Config.Endpoint, UriKind.Absolute))
+            {
+                ShowToast("Inserire un endpoint");
+                return;
+            }
             Config.InizializzaAPI();
             Config.SalvaConfigurazione();
             await PopupNavigation.Instance.PopAsync(true);
+            MessengerInstance.Send<bool>(true, "ImpostazioniChiuse");
         }
 
         private async void CancellaDBAsync()
         {
             if (await DisplayBasicAlert("Sei sicuro/a di voler cancellare tutti i voti inseriti?\nL'operazione è irreversibile.\n", "Cancellazione dati"))
-                db.DropTable<Voto>();
+                db.TruncateTable<Voto>();
 
             Config.CancellaUltimoInvio(1, 12);
             Config.CancellaVotiDaEliminare();
+
+            MessengerInstance.Send(true, "RicaricaVoti");
         }
 
         private async void VerificaConnessioneAsync()
         {
+            api.Endpoint = Config.Endpoint;
+            if (!string.IsNullOrEmpty(Config.Username) && !string.IsNullOrEmpty(Config.Password))
+                api.SetAuthentication(Config.Username, Config.Password);
             var res = await api.Ping();
             ShowToast($"Dati inseriti: {(res ? "Validi" : "Invalidi")}");
         }
 
         private async void ForzaInvio()
         {
-            if(Xamarin.Essentials.Connectivity.NetworkAccess != Xamarin.Essentials.NetworkAccess.Internet)
+            if(Connectivity.NetworkAccess != NetworkAccess.Internet)
             {
                 ShowToast("Connessione assente");
                 return;
@@ -72,7 +89,7 @@ namespace SMLC2019.ViewModels
                     {
                         var max = voti.Max(x => x.tempo);
                         Config.SalvaUltimoInvio(seggio, max);
-                        // TODO: notifica invio
+                        MessengerInstance.Send(true, "RicaricaVoti");
                     }
                 }
                 else

@@ -117,12 +117,31 @@ namespace SMLC2019.ViewModels
             Inizializza();
 
             invioTimer = new Timer(InviaVotiBG, null, 5000, 60000);
-            
+            RegistraMessenger();
+        }
+
+        private void RegistraMessenger()
+        {
+            MessengerInstance.Register<bool>(this, "ImpostazioniChiuse", (status) =>
+            {
+                if (!elencoCandidati.Any())
+                    Inizializza();
+            });
+            MessengerInstance.Register<bool>(this, "VotiCancellati", (x) =>
+            {
+                tempoUltimoInvio = 0;
+                VotiCaricare = 0;
+                Device.BeginInvokeOnMainThread(() => UltimiVoti.Clear());
+            });
+            MessengerInstance.Register<bool>(this, "RicaricaVoti", (x) =>
+            {
+                CaricaUltimiVoti();
+            });
         }
 
         private void Configuration_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
         {
-            if(conf.Seggio != NumeroSeggio)
+            if (conf.Seggio != NumeroSeggio)
             {
                 NumeroSeggio = conf.Seggio;
                 CaricaUltimiVoti();
@@ -132,7 +151,7 @@ namespace SMLC2019.ViewModels
 
         public override async Task NavigatedToAsync(object o = null)
         {
-            if (NumeroSeggio <= 0)
+            if (NumeroSeggio <= 0 || string.IsNullOrEmpty(conf.Endpoint))
                 ApriImpostazioni();
             await Task.CompletedTask;
         }
@@ -215,6 +234,8 @@ namespace SMLC2019.ViewModels
             Device.BeginInvokeOnMainThread(() =>
             {
                 UltimiVoti.Clear();
+                tempoUltimoInvio = conf.UltimoInvio;
+                VotiCaricare = db.GetVotiDaCaricareCount(NumeroSeggio, tempoUltimoInvio);
                 foreach (var v in voti.OrderBy(x => x.tempo))
                     AggiungiUltimoVoto(v);
             });

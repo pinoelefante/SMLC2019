@@ -45,7 +45,7 @@ namespace pinoelefante.Services
             }
             CreateDatabase();
         }
-        public void DropTable<T>()
+        public void TruncateTable<T>()
         {
             using(var conn = GetConnection())
             {

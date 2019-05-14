@@ -29,7 +29,7 @@ namespace SMLC2019.ViewModels
                 CaricaVoti();
             }
         }
-        public RelayCommand CaricaVotiCommand => caricaVotiCmd ?? (caricaVotiCmd = new RelayCommand(CaricaVoti));
+        public RelayCommand CaricaVotiCommand => caricaVotiCmd ?? (caricaVotiCmd = new RelayCommand(() => CaricaVoti(true)));
         public ObservableCollection<RisultatoPartitoWrapped> RisultatiListe { get; } = new ObservableCollection<RisultatoPartitoWrapped>();
         public ObservableCollection<RisultatoCandidatoWrapped> RisultatiCandidati { get; } = new ObservableCollection<RisultatoCandidatoWrapped>();
         public RisultatiElettorali Risultati { get; set; }
@@ -41,28 +41,32 @@ namespace SMLC2019.ViewModels
 
         public override Task NavigatedToAsync(object o = null)
         {
-            CaricaVoti();
+            CaricaVoti(true);
             return base.NavigatedToAsync(o);
         }
 
-        private async void CaricaVoti()
+        private async void CaricaVoti(bool force=false)
         {
-            var res = await api.GetVotiPerSeggioAsync();
-            if (res == null)
-                ShowToast("Si è verificato un errore durante il caricamento dei voti");
-            else
+            if(force || Risultati == null)
             {
-                Risultati = res;
-                if (SeggioSelezionato < 1)
-                {
-                    GeneraVotiListeTotale(res);
-                    GeneraVotiCandidatiTotale(res);
-                }
+                var res = await api.GetVotiPerSeggioAsync();
+                if (res != null)
+                    Risultati = res;
                 else
                 {
-                    GeneraVotiListeSeggio(res, SeggioSelezionato);
-                    GeneraVotiCandidatiSeggio(res, SeggioSelezionato);
+                    ShowToast("Si è verificato un errore durante il caricamento dei voti");
+                    return;
                 }
+            }
+            if (SeggioSelezionato < 1)
+            {
+                GeneraVotiListeTotale(Risultati);
+                GeneraVotiCandidatiTotale(Risultati);
+            }
+            else
+            {
+                GeneraVotiListeSeggio(Risultati, SeggioSelezionato);
+                GeneraVotiCandidatiSeggio(Risultati, SeggioSelezionato);
             }
         }
 

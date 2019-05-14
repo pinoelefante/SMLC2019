@@ -161,6 +161,8 @@ namespace SMLC2019.Services
                     catch { }
                 }
             }
+            if (Seggio >= start && Seggio <= end)
+                UltimoInvio = 0;
         }
         public void LeggiDaEliminare()
         {
