@@ -17,7 +17,6 @@
             <x:Int32>7</x:Int32>
             <x:Int32>8</x:Int32>
             <x:Int32>9</x:Int32>
-            <x:Int32>10</x:Int32>
         </x:Array>
     </popup:PopupPage.Resources>
     

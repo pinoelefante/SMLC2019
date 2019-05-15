@@ -76,7 +76,6 @@
             <x:String>7</x:String>
             <x:String>8</x:String>
             <x:String>9</x:String>
-            <x:String>10</x:String>
         </x:Array>
     </ContentPage.Resources>
     <Grid>
