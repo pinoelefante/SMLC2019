@@ -17,6 +17,8 @@ using Xamarin.Essentials;
 using Xamarin.Forms;
 using SMLC2019.Extensions;
 using System.Threading;
+using System.ComponentModel;
+using System.Runtime.CompilerServices;
 
 namespace SMLC2019.ViewModels
 {
@@ -29,7 +31,7 @@ namespace SMLC2019.ViewModels
         protected Dictionary<Partito, List<Candidato>> elencoCandidati;
         private int votiCaricare, seggio;
         private long tempoUltimoInvio;
-        private Partito partitoSelezionato = null;
+        private PartitoWrapped partitoSelezionato = null;
         private Candidato maschioSelezionato, femminaSelezionata, emptyCandidato = new Candidato() { cognome = "(Nessun voto)" };
         private List<Candidato> altreSchede;
         private ICommand aggiungiCommand, cancellaVoto, inviaVoti, aggiornaVoti, apriImpostazioni;
@@ -38,8 +40,8 @@ namespace SMLC2019.ViewModels
         private Timer invioTimer;
 
         public int NumeroSeggio { get => seggio; set => SetMT(ref seggio, value); }
-        public ObservableCollection<Partito> ElencoPartiti { get; } = new ObservableCollection<Partito>();
-        public Partito PartitoSelezionato
+        public ObservableCollection<PartitoWrapped> ElencoPartiti { get; } = new ObservableCollection<PartitoWrapped>();
+        public PartitoWrapped PartitoSelezionato
         {
             get => partitoSelezionato;
             set
@@ -47,7 +49,7 @@ namespace SMLC2019.ViewModels
                 SetMT(ref partitoSelezionato, value);
                 MaschioSelezionato = null;
                 FemminaSelezionata = null;
-                CaricaCandidati(value);
+                CaricaCandidati(value == null ? null : value.Partito);
             }
         }
         public ObservableCollection<Candidato> ElencoCandidatiMaschi { get; } = new ObservableCollection<Candidato>();
@@ -66,7 +68,7 @@ namespace SMLC2019.ViewModels
             {
                 if (PartitoSelezionato == null)
                     return;
-                InserisciScheda(PartitoSelezionato.id, MaschioSelezionato?.id, FemminaSelezionata?.id);
+                InserisciScheda(PartitoSelezionato.Partito.id, MaschioSelezionato?.id, FemminaSelezionata?.id);
             }));
         public ICommand CancellaVotoCommand =>
             cancellaVoto ??
@@ -146,6 +148,7 @@ namespace SMLC2019.ViewModels
                 NumeroSeggio = conf.Seggio;
                 CaricaUltimiVoti();
                 tempoUltimoInvio = conf.UltimoInvio;
+                CaricaVotiPartiti();
             }
         }
 
@@ -164,6 +167,12 @@ namespace SMLC2019.ViewModels
             tempoUltimoInvio = conf.UltimoInvio;
             VotiCaricare = db.GetVotiDaCaricareCount(NumeroSeggio, tempoUltimoInvio);
             CaricaUltimiVoti();
+        }
+
+        private void CaricaVotiPartiti()
+        {
+            foreach(var p in ElencoPartiti)
+                p.Voti = db.GetVotiPartitoCount(NumeroSeggio, p.Partito.id);
         }
 
         protected virtual void CaricaCandidati(Partito p)
@@ -219,7 +228,9 @@ namespace SMLC2019.ViewModels
                 var altreSchede = candidati.Where(x => x.sesso.Equals("N", StringComparison.CurrentCultureIgnoreCase)).ToList();
                 AltreSchede = altreSchede;
                 
-                ElencoPartiti.AddRange(partiti.Where(x => x.sindaco != null).OrderBy(x => x.ordine), true);
+                ElencoPartiti.AddRange(partiti.Where(x => x.sindaco != null)
+                                              .OrderBy(x => x.ordine)
+                                              .Select(x => new PartitoWrapped(x, db.GetVotiPartitoCount(NumeroSeggio, x.id))), true);
                 foreach (var p in partiti)
                 {
                     elencoCandidati.Add(p, new List<Candidato>());
@@ -269,6 +280,9 @@ namespace SMLC2019.ViewModels
 
                     VotiCaricare++;
                 });
+                var p = ElencoPartiti.FirstOrDefault(x => x.Partito.id == partito);
+                if (p != null)
+                    p.Voti++;
                 ShowToast("Aggiunto");
             }
             else
@@ -375,6 +389,29 @@ namespace SMLC2019.ViewModels
             Partito = p;
             Maschio = m;
             Femmina = f;
+        }
+    }
+    public class PartitoWrapped : INotifyPropertyChanged
+    {
+        private int voti;
+        public Partito Partito { get; }
+        public int Voti { get => voti; set => Set(ref voti, value); }
+
+        public PartitoWrapped(Partito p, int v)
+        {
+            Partito = p;
+            Voti = v;
+        }
+
+        public event PropertyChangedEventHandler PropertyChanged;
+
+        public void Set<T>(ref T par, T val, [CallerMemberName] string propertyName="")
+        {
+            par = val;
+            Device.BeginInvokeOnMainThread(() =>
+            {
+                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+            });
         }
     }
 }

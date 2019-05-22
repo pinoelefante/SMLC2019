@@ -163,5 +163,13 @@ namespace pinoelefante.Services
                 return conn.Table<Voto>().Where(x => x.seggio == seggio && x.tempo > last).Count();
             }
         }
+
+        public int GetVotiPartitoCount(int seggio, int partito)
+        {
+            using(var conn = GetConnection())
+            {
+                return conn.Table<Voto>().Where(x => x.seggio == seggio && x.partito == partito).Count();
+            }
+        }
     }
 }

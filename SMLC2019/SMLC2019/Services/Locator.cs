@@ -25,7 +25,6 @@ namespace SMLC2019.Services
             SimpleIoc.Default.Register<AggiungiVotiSmartphone>();
             SimpleIoc.Default.Register<AggiungiVotiTablet>();
             SimpleIoc.Default.Register<SettingsViewModel>();
-            SimpleIoc.Default.Register<RisultatiViewModel>();
         }
 
         public static T GetService<T>() => SimpleIoc.Default.GetInstance<T>();
@@ -33,6 +32,5 @@ namespace SMLC2019.Services
         public AggiungiVotiSmartphone AggiungiVotiSmartphone => GetService<AggiungiVotiSmartphone>();
         public AggiungiVotiTablet AggiungiVotiTablet => GetService<AggiungiVotiTablet>();
         public SettingsViewModel SettingsViewModel => GetService<SettingsViewModel>();
-        public RisultatiViewModel RisultatiViewModel => GetService<RisultatiViewModel>();
     }
 }

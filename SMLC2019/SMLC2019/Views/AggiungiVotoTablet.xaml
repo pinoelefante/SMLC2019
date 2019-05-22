@@ -13,18 +13,24 @@
                 <Grid.RowDefinitions>
                     <RowDefinition />
                     <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
                 </Grid.RowDefinitions>
                 <ffimage:CachedImage Grid.Row="0"
                                      HorizontalOptions="Center"
-                                     Source="{Binding logo}"
+                                     Source="{Binding Partito.logo}"
                                      HeightRequest="100"
                                      Aspect="AspectFit" />
                 <Label Grid.Row="1"
-                               Text="{Binding nome}"
+                               Text="{Binding Partito.nome}"
                                HorizontalTextAlignment="Center"
                                FontSize="14"
                                MaxLines="1"
                                LineBreakMode="TailTruncation" />
+                <Label Grid.Row="2"
+                       MaxLines="1"
+                       LineBreakMode="TailTruncation"
+                       HorizontalTextAlignment="Center"
+                       Text="{Binding Voti}"/>
             </Grid>
         </DataTemplate>
 

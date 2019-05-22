@@ -11,6 +11,4 @@
         <views:UltimiVotiView />
     </ContentPage>
 
-    <views:RisultatiPage />
-
 </TabbedPage>

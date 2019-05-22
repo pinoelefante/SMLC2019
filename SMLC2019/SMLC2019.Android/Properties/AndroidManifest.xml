@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<manifest xmlns:android="http://schemas.android.com/apk/res/android" android:versionCode="2" android:versionName="1.0.1" package="it.pinoelefante.SMLC2019" android:installLocation="auto">
-	<uses-sdk android:targetSdkVersion="28" android:minSdkVersion="21" />
+<manifest xmlns:android="http://schemas.android.com/apk/res/android" android:versionCode="7" android:versionName="1.2" package="it.pinoelefante.SMLC2019" android:installLocation="auto">
+	<uses-sdk android:targetSdkVersion="28" android:minSdkVersion="18" />
 	<application android:label="SMLC2019" android:icon="@drawable/xamarin_logo"></application>
 	<uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
 </manifest>

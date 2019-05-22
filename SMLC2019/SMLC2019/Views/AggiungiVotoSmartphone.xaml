@@ -57,7 +57,7 @@
 
             <!-- Immagine del partito -->
             <ffimage:CachedImage Grid.Column="0"
-                                 Source="{Binding PartitoSelezionato.logo}"
+                                 Source="{Binding PartitoSelezionato.Partito.logo}"
                                  Aspect="AspectFit"
                                  BackgroundColor="DarkGray"
                                  HeightRequest="150">
@@ -77,7 +77,7 @@
             <Picker x:Name="pickerPartito"
                     Grid.Column="0"
                     ItemsSource="{Binding ElencoPartiti}"
-                    ItemDisplayBinding="{Binding nome}"
+                    ItemDisplayBinding="{Binding Partito.nome}"
                     SelectedItem="{Binding PartitoSelezionato, Mode=TwoWay}"
                     IsVisible="False" />
 
@@ -109,83 +109,5 @@
         </Grid>
 
         <views:UltimiVotiView Grid.Row="2" />
-        <!-- Ultimi voti inseriti -->
-        <!--
-        <ListView Grid.Row="2"
-                  Margin="5"
-                  ItemsSource="{Binding UltimiVoti}"
-                  SelectedItem="{Binding VotoSelezionato, Mode=TwoWay}"
-                  IsPullToRefreshEnabled="True"
-                  RefreshCommand="{Binding AggiornaVotiCommand}"
-                  Refreshing="ListVoti_Refreshing"
-                  x:Name="listVoti">
-            <ListView.Header>
-                <Label Text="{Binding LimiteVotiVisualizzati, StringFormat='Ultimi {0} voti inseriti'}"/>
-            </ListView.Header>
-            <ListView.ItemTemplate>
-                <DataTemplate>
-                    <ViewCell>
-                        <Grid Padding="5">
-                            <Grid.ColumnDefinitions>
-                                <ColumnDefinition Width="*"/>
-                                <ColumnDefinition Width="*" />
-                                <ColumnDefinition Width="2.5*"/>
-                                <ColumnDefinition Width="*" />
-                                <ColumnDefinition Width="2.5*" />
-                                <ColumnDefinition Width="2*" />
-                            </Grid.ColumnDefinitions>
-                            <ffimage:CachedImage Grid.Column="0" Source="{Binding Partito.logo}" Margin="0,0,10,0" />
-                            <ffimage:CachedImage Grid.Column="1" Source="{Binding Maschio.foto}">
-                                <ffimage:CachedImage.Transformations>
-                                    <ffimaget:CircleTransformation />
-                                </ffimage:CachedImage.Transformations>
-                            </ffimage:CachedImage>
-                            <Label Grid.Column="2" Text="{Binding Maschio, Converter={StaticResource ListNameConverter}}" HorizontalTextAlignment="Start" VerticalOptions="Center" />
-
-                            <ffimage:CachedImage Grid.Column="3" Source="{Binding Femmina.foto}">
-                                <ffimage:CachedImage.Transformations>
-                                    <ffimaget:CircleTransformation />
-                                </ffimage:CachedImage.Transformations>
-                            </ffimage:CachedImage>
-                            <Label Grid.Column="4" Text="{Binding Femmina, Converter={StaticResource ListNameConverter}}" HorizontalTextAlignment="Start" VerticalOptions="Center" />
-                            <Label Grid.Column="5" Text="{Binding Voto.tempo, Converter={StaticResource UnixTimestampTimeConverter}}" HorizontalTextAlignment="End" VerticalOptions="Center" Margin="0,0,10,0" FontAttributes="Italic" />
-                        </Grid>
-                    </ViewCell>
-                </DataTemplate>
-            </ListView.ItemTemplate>
-        </ListView>
-        -->
-
-        <!-- Bottoni -->
-        <!--
-        <Grid Grid.Row="3" Padding="5">
-            <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="1*" />
-                <ColumnDefinition Width="2*"/>
-                <ColumnDefinition Width="1*"/>
-            </Grid.ColumnDefinitions>
-
-            <Button Grid.Column="0"
-                    IsVisible="{Binding VotoSelezionato, Converter={StaticResource NotIsNullConverter}}"
-                    Text="Cancella"
-                    Command="{Binding CancellaVotoCommand}"/>
-
-            <Label Grid.Column="1"
-                   Text="{Binding VotiCaricare, StringFormat='Voti da caricare: {0}'}"
-                   IsVisible="{Binding VotiCaricare, Converter={StaticResource GreaterThanConverter}, ConverterParameter=0}"
-                   FontAttributes="Italic"
-                   FontSize="Small"
-                   HorizontalTextAlignment="Center"
-                   VerticalTextAlignment="Center" />
-
-            <Button x:Name="bottoneInviaVoti"
-                    Grid.Column="2"
-                    IsVisible="{Binding VotiCaricare, Converter={StaticResource GreaterThanConverter}, ConverterParameter=0}"
-                    Text="Invia"
-                    IsEnabled="False"
-                    Command="{Binding InviaVotiCommand}"/>
-            
-        </Grid>
-        -->
     </Grid>
 </ContentPage>
