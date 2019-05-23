@@ -41,6 +41,7 @@ namespace SMLC2019.ViewModels
 
         public int NumeroSeggio { get => seggio; set => SetMT(ref seggio, value); }
         public ObservableCollection<PartitoWrapped> ElencoPartiti { get; } = new ObservableCollection<PartitoWrapped>();
+        public ObservableCollection<Candidato> SelezioneCandidati { get; } = new ObservableCollection<Candidato>();
         public PartitoWrapped PartitoSelezionato
         {
             get => partitoSelezionato;
@@ -54,8 +55,26 @@ namespace SMLC2019.ViewModels
         }
         public ObservableCollection<Candidato> ElencoCandidatiMaschi { get; } = new ObservableCollection<Candidato>();
         public ObservableCollection<Candidato> ElencoCandidatiFemmine { get; } = new ObservableCollection<Candidato>();
-        public Candidato MaschioSelezionato { get => maschioSelezionato; set => SetMT(ref maschioSelezionato, value == emptyCandidato ? null : value); }
-        public Candidato FemminaSelezionata { get => femminaSelezionata; set => SetMT(ref femminaSelezionata, value == emptyCandidato ? null : value); }
+        public Candidato MaschioSelezionato
+        {
+            get => maschioSelezionato;
+            set
+            {
+                RimuoviCandidato(maschioSelezionato);
+                InserisciCandidato(value);
+                SetMT(ref maschioSelezionato, value == emptyCandidato ? null : value);
+            }
+        }
+        public Candidato FemminaSelezionata
+        {
+            get => femminaSelezionata;
+            set
+            {
+                RimuoviCandidato(femminaSelezionata);
+                InserisciCandidato(value);
+                SetMT(ref femminaSelezionata, value == emptyCandidato ? null : value);
+            }
+        }
         public List<Candidato> AltreSchede { get => altreSchede; set => SetMT(ref altreSchede, value); }
         public ObservableCollection<VotoWrapped> UltimiVoti { get; } = new ObservableCollection<VotoWrapped>();
         public int VotiCaricare { get => votiCaricare; set => SetMT(ref votiCaricare, value); }
@@ -68,7 +87,9 @@ namespace SMLC2019.ViewModels
             {
                 if (PartitoSelezionato == null)
                     return;
-                InserisciScheda(PartitoSelezionato.Partito.id, MaschioSelezionato?.id, FemminaSelezionata?.id);
+                var p1 = SelezioneCandidati.Count > 0 ? SelezioneCandidati[0].id : default(int?);
+                var p2 = SelezioneCandidati.Count == 2 ? SelezioneCandidati[1].id : default(int?);
+                InserisciScheda(PartitoSelezionato.Partito.id, p1, p2);
             }));
         public ICommand CancellaVotoCommand =>
             cancellaVoto ??
@@ -251,19 +272,19 @@ namespace SMLC2019.ViewModels
                     AggiungiUltimoVoto(v);
             });
         }
-        public async void InserisciAltraScheda(int partito, int? maschio, int? femmina, string nome="")
+        public async void InserisciAltraScheda(int partito, int? p1, int? p2, string nome="")
         {
             if (!await DisplayBasicAlert($"Sei sicuro/a di voler inserire la scheda{(string.IsNullOrEmpty(nome) ? string.Empty : $" {nome}")}?", "Conferma inserimento", "Si", "No"))
                 return;
-            InserisciScheda(partito, maschio, femmina);
+            InserisciScheda(partito, p1, p2);
         }
-        public void InserisciScheda(int partito, int? maschio, int? femmina)
+        public void InserisciScheda(int partito, int? p1, int? p2)
         {
             Voto v = new Voto()
             {
                 partito = partito,
-                maschio = maschio,
-                femmina = femmina,
+                preferenza1 = p1,
+                preferenza2 = p2,
                 seggio = NumeroSeggio,
                 tempo = (Int32)(DateTime.Now.Subtract(new DateTime(1970, 1, 1))).TotalSeconds
             };
@@ -277,18 +298,36 @@ namespace SMLC2019.ViewModels
                     FemminaSelezionata = null;
                     MaschioSelezionato = null;
                     PartitoSelezionato = null;
-
+                    SelezioneCandidati.Clear();
                     VotiCaricare++;
+
+                    var p = ElencoPartiti.FirstOrDefault(x => x.Partito.id == partito);
+                    if (p != null)
+                        p.Voti++;
+                    ShowToast("Aggiunto");
                 });
-                var p = ElencoPartiti.FirstOrDefault(x => x.Partito.id == partito);
-                if (p != null)
-                    p.Voti++;
-                ShowToast("Aggiunto");
             }
             else
             {
                 ShowToast("Il voto non è stato inserito");
             }
+        }
+        private void InserisciCandidato(Candidato c)
+        {
+            if (c != null)
+                SelezioneCandidati.Add(c);
+        }
+        private void RimuoviCandidato(Candidato c)
+        {
+            if (c != null)
+                SelezioneCandidati.Remove(c);
+        }
+        private void InvertiSelezione()
+        {
+            if (SelezioneCandidati.Count < 2)
+                return;
+            // var tmp = SelezioneCandidati[0];
+            SelezioneCandidati.Move(0, 1);
         }
 
         private void AggiungiUltimoVoto(Voto v)
@@ -301,8 +340,8 @@ namespace SMLC2019.ViewModels
             }
             VotoWrapped vw = new VotoWrapped(v,
                 p,
-                elencoCandidati[p].FirstOrDefault(x => x.id == v.maschio),
-                elencoCandidati[p].FirstOrDefault(x => x.id == v.femmina));
+                elencoCandidati[p].FirstOrDefault(x => x.id == v.preferenza1),
+                elencoCandidati[p].FirstOrDefault(x => x.id == v.preferenza2));
 
             Device.BeginInvokeOnMainThread(() =>
             {

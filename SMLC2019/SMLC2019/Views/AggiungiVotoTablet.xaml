@@ -122,12 +122,23 @@
             
         </Grid>
 
-        <StackLayout Grid.Row="3" Margin="10,20" HorizontalOptions="Center">
+        <Grid Grid.Row="3" Padding="5,10">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="Auto" />
+                <ColumnDefinition Width="Auto" />
+                <ColumnDefinition Width="Auto" />
+                <ColumnDefinition />
+                <ColumnDefinition Width="Auto" />
+            </Grid.ColumnDefinitions>
+            
+            
+            
             <Button Text="Aggiungi"
+                    Grid.Column="4"
                     IsEnabled="{Binding PartitoSelezionato, Converter={StaticResource NotIsNullConverter}}"
                     Command="{Binding AggiungiCommand}"
                     HeightRequest="40"/>
-        </StackLayout>
+        </Grid>
         
     </Grid>
 </ContentPage>
