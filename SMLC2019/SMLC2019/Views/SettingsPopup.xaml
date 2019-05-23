@@ -19,79 +19,80 @@
             <x:Int32>9</x:Int32>
         </x:Array>
     </popup:PopupPage.Resources>
-    
-    <Grid Padding="10" ColumnSpacing="10" RowSpacing="10">
-        <Grid.RowDefinitions>
-            <RowDefinition Height="Auto" />
-            <RowDefinition />
-            <RowDefinition Height="Auto" />
-        </Grid.RowDefinitions>
-
-        <Label Text="Impostazioni" HorizontalTextAlignment="Center" FontAttributes="Bold" TextColor="Gray" />
-
-        <Grid Grid.Row="1" ColumnSpacing="10" RowSpacing="5">
+    <ScrollView>
+        <Grid Padding="10" ColumnSpacing="10" RowSpacing="10">
             <Grid.RowDefinitions>
                 <RowDefinition Height="Auto" />
-                <RowDefinition Height="Auto" />
-                <RowDefinition Height="Auto" />
-                <RowDefinition Height="Auto" />
-                <RowDefinition Height="Auto" />
-                <RowDefinition Height="Auto" />
-                <RowDefinition Height="Auto" />
-                <RowDefinition Height="Auto" />
                 <RowDefinition />
+                <RowDefinition Height="Auto" />
             </Grid.RowDefinitions>
-            <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="Auto" />
-                <ColumnDefinition />
-            </Grid.ColumnDefinitions>
 
-            <Label Text="Seggio" Grid.Column="0" Grid.Row="0" VerticalOptions="Center" />
-            <Picker x:Name="pickerSeggio"
+            <Label Text="Impostazioni" HorizontalTextAlignment="Center" FontAttributes="Bold" TextColor="Gray" />
+
+            <Grid Grid.Row="1" ColumnSpacing="10" RowSpacing="5">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition />
+                </Grid.RowDefinitions>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto" />
+                    <ColumnDefinition />
+                </Grid.ColumnDefinitions>
+
+                <Label Text="Seggio" Grid.Column="0" Grid.Row="0" VerticalOptions="Center" />
+                <Picker x:Name="pickerSeggio"
                     Grid.Row="0"
                     Grid.Column="1"
                     ItemsSource="{StaticResource Seggi}"
                     SelectedItem="{Binding Config.Seggio, Mode=TwoWay}"/>
 
-            <Label Text="Modalità" Grid.Row="1" VerticalOptions="Center"/>
-            <Picker Grid.Row="1" Grid.Column="1" SelectedItem="{Binding Config.ModalitaVisiva, Mode=TwoWay}">
-                <Picker.Items>
-                    <x:String>Tablet</x:String>
-                    <x:String>Smartphone</x:String>
-                </Picker.Items>
-            </Picker>
+                <Label Text="Modalità" Grid.Row="1" VerticalOptions="Center"/>
+                <Picker Grid.Row="1" Grid.Column="1" SelectedItem="{Binding Config.ModalitaVisiva, Mode=TwoWay}">
+                    <Picker.Items>
+                        <x:String>Tablet</x:String>
+                        <x:String>Smartphone</x:String>
+                    </Picker.Items>
+                </Picker>
 
-            <Label Text="Endpoint" Grid.Row="2" VerticalOptions="Center" />
-            <Grid Grid.Row="2" Grid.Column="1" ColumnSpacing="0">
-                <Grid.ColumnDefinitions>
-                    <ColumnDefinition />
-                    <ColumnDefinition Width="Auto" />
-                </Grid.ColumnDefinitions>
-                <Entry Text="{Binding Config.Endpoint, Mode=TwoWay}"
+                <Label Text="Endpoint" Grid.Row="2" VerticalOptions="Center" />
+                <Grid Grid.Row="2" Grid.Column="1" ColumnSpacing="0">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition />
+                        <ColumnDefinition Width="Auto" />
+                    </Grid.ColumnDefinitions>
+                    <Entry Text="{Binding Config.Endpoint, Mode=TwoWay}"
                        Placeholder="https://www.indirizzo.it/cartella" HorizontalOptions="Fill"/>
-                <Label Grid.Column="1"
+                    <Label Grid.Column="1"
                        Text="/endpoint.php"
                        TextColor="Gray"
                        VerticalOptions="Center" />
+                </Grid>
+
+                <Label Text="Username" Grid.Row="3" VerticalOptions="Center" />
+                <Entry Grid.Row="3" Grid.Column="1" Text="{Binding Config.Username, Mode=TwoWay}" />
+
+                <Label Text="Password" Grid.Row="4" VerticalOptions="Center" />
+                <Entry Grid.Row="4" Grid.Column="1" Text="{Binding Config.Password, Mode=TwoWay}" IsPassword="True" />
+
+                <Button Text="Verifica dati" Grid.Row="5" Grid.ColumnSpan="2" HorizontalOptions="Center" Command="{Binding VerificaDatiCommand}" />
+
+                <Button Text="Cancella vecchi dati" Grid.Row="6" Grid.ColumnSpan="2" HorizontalOptions="Center" Command="{Binding CancellaDBCommand}" />
+
+                <Button Text="Forza invio" Grid.Row="7" Grid.ColumnSpan="2" HorizontalOptions="Center" Command="{Binding ForzaInvioCommand}" />
+
             </Grid>
 
-            <Label Text="Username" Grid.Row="3" VerticalOptions="Center" />
-            <Entry Grid.Row="3" Grid.Column="1" Text="{Binding Config.Username, Mode=TwoWay}" />
-
-            <Label Text="Password" Grid.Row="4" VerticalOptions="Center" />
-            <Entry Grid.Row="4" Grid.Column="1" Text="{Binding Config.Password, Mode=TwoWay}" IsPassword="True" />
-
-            <Button Text="Verifica dati" Grid.Row="5" Grid.ColumnSpan="2" HorizontalOptions="Center" Command="{Binding VerificaDatiCommand}" />
-
-            <Button Text="Cancella vecchi dati" Grid.Row="6" Grid.ColumnSpan="2" HorizontalOptions="Center" Command="{Binding CancellaDBCommand}" />
-
-            <Button Text="Forza invio" Grid.Row="7" Grid.ColumnSpan="2" HorizontalOptions="Center" Command="{Binding ForzaInvioCommand}" />
-
-        </Grid>
-
-        <Button Grid.Row="2"
+            <Button Grid.Row="2"
                 Text="Chiudi"
                 IsEnabled="{Binding Source={x:Reference pickerSeggio}, Path=SelectedItem, Converter={StaticResource GreaterThanConverter}, ConverterParameter=0}"
                 Command="{Binding ChiudiCommand}"/>
-    </Grid>
+        </Grid>
+    </ScrollView>
 </popup:PopupPage>

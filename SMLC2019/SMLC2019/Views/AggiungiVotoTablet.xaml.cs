@@ -56,8 +56,12 @@ namespace SMLC2019.Views
             base.OnSizeAllocated(width, height);
 
             var span = (int)((width / 130) / 2);
-            collectionMaschi.ItemsLayout = new GridItemsLayout(span, ItemsLayoutOrientation.Vertical);
-            collectionFemmine.ItemsLayout = new GridItemsLayout(span, ItemsLayoutOrientation.Vertical);
+            GridItemsLayout maschiLayout = collectionMaschi.ItemsLayout as GridItemsLayout;
+            if (maschiLayout?.Span != span)
+                maschiLayout.Span = span;
+            GridItemsLayout femmineLayout = collectionFemmine.ItemsLayout as GridItemsLayout;
+            if (femmineLayout?.Span != span)
+                femmineLayout.Span = span;
         }
 
         private void CandidatoTapped(object sender, EventArgs e)

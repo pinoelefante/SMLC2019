@@ -237,4 +237,16 @@
   <ItemGroup>
     <BundleResource Include="Resources\switchcandidati.png" />
   </ItemGroup>
+  <ItemGroup>
+    <BundleResource Include="Resources\garbage.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <BundleResource Include="Resources\paperplane.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <BundleResource Include="Resources\settingsicon.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <BundleResource Include="Resources\shuffleicon.png" />
+  </ItemGroup>
 </Project>

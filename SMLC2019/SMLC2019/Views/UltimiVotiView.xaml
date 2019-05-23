@@ -61,10 +61,13 @@
                 <ColumnDefinition Width="1*"/>
             </Grid.ColumnDefinitions>
 
-            <Button Grid.Column="0"
-                    IsVisible="{Binding VotoSelezionato, Converter={StaticResource NotIsNullConverter}}"
-                    Text="Cancella"
-                    Command="{Binding CancellaVotoCommand}"/>
+            <ImageButton Grid.Column="0"
+                         IsVisible="{Binding VotoSelezionato, Converter={StaticResource NotIsNullConverter}}"
+                         Source="garbage.png"
+                         HeightRequest="50"
+                         WidthRequest="50"
+                         BackgroundColor="Transparent"
+                         Command="{Binding CancellaVotoCommand}"/>
 
             <Label Grid.Column="1"
                    Text="{Binding VotiCaricare, StringFormat='Voti da caricare: {0}'}"
@@ -74,12 +77,15 @@
                    HorizontalTextAlignment="Center"
                    VerticalTextAlignment="Center" />
 
-            <Button x:Name="bottoneInviaVoti"
-                    Grid.Column="2"
-                    IsVisible="{Binding VotiCaricare, Converter={StaticResource GreaterThanConverter}, ConverterParameter=0}"
-                    Text="Invia"
-                    IsEnabled="False"
-                    Command="{Binding InviaVotiCommand}"/>
+            <ImageButton x:Name="bottoneInviaVoti"
+                         Grid.Column="2"
+                         IsVisible="{Binding VotiCaricare, Converter={StaticResource GreaterThanConverter}, ConverterParameter=0}"
+                         Source="paperplane.png"
+                         HeightRequest="50"
+                         WidthRequest="50"
+                         BackgroundColor="Transparent"
+                         IsEnabled="False"
+                         Command="{Binding InviaVotiCommand}"/>
 
         </Grid>
     </Grid>
