@@ -61,12 +61,11 @@
                 <ColumnDefinition Width="1*"/>
             </Grid.ColumnDefinitions>
 
-            <ImageButton Grid.Column="0"
+            <Button Grid.Column="0"
                          IsVisible="{Binding VotoSelezionato, Converter={StaticResource NotIsNullConverter}}"
-                         Source="garbage.png"
+                         Text="CANC"
                          HeightRequest="50"
                          WidthRequest="50"
-                         BackgroundColor="Transparent"
                          Command="{Binding CancellaVotoCommand}"/>
 
             <Label Grid.Column="1"
@@ -77,13 +76,12 @@
                    HorizontalTextAlignment="Center"
                    VerticalTextAlignment="Center" />
 
-            <ImageButton x:Name="bottoneInviaVoti"
+            <Button x:Name="bottoneInviaVoti"
                          Grid.Column="2"
                          IsVisible="{Binding VotiCaricare, Converter={StaticResource GreaterThanConverter}, ConverterParameter=0}"
-                         Source="paperplane.png"
+                         Text="INVIA"
                          HeightRequest="50"
                          WidthRequest="50"
-                         BackgroundColor="Transparent"
                          IsEnabled="False"
                          Command="{Binding InviaVotiCommand}"/>
 

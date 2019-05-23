@@ -139,7 +139,9 @@
 
             <ffimage:CachedImage Grid.Column="0"
                                  Source="{Binding SelezioneCandidati, Converter={StaticResource CandidatoImageFromCollection}, ConverterParameter=0}">
-                
+                <ffimage:CachedImage.GestureRecognizers>
+                    <TapGestureRecognizer Command="{Binding InvertiSelezioneCommand}" />
+                </ffimage:CachedImage.GestureRecognizers>
             </ffimage:CachedImage>
 
             <ImageButton Grid.Column="1"
@@ -152,7 +154,9 @@
 
             <ffimage:CachedImage Grid.Column="2"
                                  Source="{Binding SelezioneCandidati, Converter={StaticResource CandidatoImageFromCollection}, ConverterParameter=1}">
-
+                <ffimage:CachedImage.GestureRecognizers>
+                    <TapGestureRecognizer Command="{Binding InvertiSelezioneCommand}" />
+                </ffimage:CachedImage.GestureRecognizers>
             </ffimage:CachedImage>
 
             <Button Text="Aggiungi"
