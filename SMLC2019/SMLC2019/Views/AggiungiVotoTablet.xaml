@@ -130,14 +130,26 @@
                 <ColumnDefinition />
                 <ColumnDefinition Width="Auto" />
             </Grid.ColumnDefinitions>
-            
-            
-            
+
+            <ffimage:CachedImage Grid.Column="0"
+                                 Source="{Binding SelezioneCandidati, Converter={StaticResource CandidatoImageFromCollection}, ConverterParameter=0}">
+                
+            </ffimage:CachedImage>
+
+            <ImageButton Grid.Column="1"
+                         Source="switchcandidati.png"
+                         Command="{Binding InvertiSelezioneCommand}"
+                         IsVisible="{Binding SelezioneCandidati.Count, Converter={StaticResource IntEquals}, ConverterParameter=2}"/>
+
+            <ffimage:CachedImage Grid.Column="2"
+                                 Source="{Binding SelezioneCandidati, Converter={StaticResource CandidatoImageFromCollection}, ConverterParameter=1}">
+
+            </ffimage:CachedImage>
+
             <Button Text="Aggiungi"
                     Grid.Column="4"
                     IsEnabled="{Binding PartitoSelezionato, Converter={StaticResource NotIsNullConverter}}"
-                    Command="{Binding AggiungiCommand}"
-                    HeightRequest="40"/>
+                    Command="{Binding AggiungiCommand}"/>
         </Grid>
         
     </Grid>

@@ -34,7 +34,7 @@ namespace SMLC2019.ViewModels
         private PartitoWrapped partitoSelezionato = null;
         private Candidato maschioSelezionato, femminaSelezionata, emptyCandidato = new Candidato() { cognome = "(Nessun voto)" };
         private List<Candidato> altreSchede;
-        private ICommand aggiungiCommand, cancellaVoto, inviaVoti, aggiornaVoti, apriImpostazioni;
+        private ICommand aggiungiCommand, cancellaVoto, inviaVoti, aggiornaVoti, apriImpostazioni, invertiSelezioneCmd;
         private VotoWrapped votoSelezionato;
         private bool isInviandoVoti = false;
         private Timer invioTimer;
@@ -129,6 +129,7 @@ namespace SMLC2019.ViewModels
 
         public ICommand ApriImpostazioniCommand => apriImpostazioni ?? (apriImpostazioni = new RelayCommand(() => ApriImpostazioni()));
         public ICommand InviaVotiCommand => inviaVoti ?? (inviaVoti = new RelayCommand(() => InviaVoti()));
+        public ICommand InvertiSelezioneCommand => invertiSelezioneCmd ?? (invertiSelezioneCmd = new RelayCommand(InvertiSelezione));
         public AggiungiVotiSmartphone(ServerAPI s, DatabaseService d, Configuration c, IToast t) : base(t)
         {
             elencoCandidati = new Dictionary<Partito, List<Candidato>>();
@@ -314,20 +315,31 @@ namespace SMLC2019.ViewModels
         }
         private void InserisciCandidato(Candidato c)
         {
-            if (c != null)
-                SelezioneCandidati.Add(c);
+            Device.BeginInvokeOnMainThread(() =>
+            {
+                if (c != null)
+                    SelezioneCandidati.Add(c);
+                RaisePropertyChanged(() => SelezioneCandidati);
+            });
         }
         private void RimuoviCandidato(Candidato c)
         {
-            if (c != null)
-                SelezioneCandidati.Remove(c);
+            Device.BeginInvokeOnMainThread(() =>
+            {
+                if (c != null)
+                    SelezioneCandidati.Remove(c);
+                RaisePropertyChanged(() => SelezioneCandidati);
+            });  
         }
         private void InvertiSelezione()
         {
             if (SelezioneCandidati.Count < 2)
                 return;
-            // var tmp = SelezioneCandidati[0];
-            SelezioneCandidati.Move(0, 1);
+            Device.BeginInvokeOnMainThread(() =>
+            {
+                SelezioneCandidati.Move(0, 1);
+                RaisePropertyChanged(() => SelezioneCandidati);
+            });
         }
 
         private void AggiungiUltimoVoto(Voto v)

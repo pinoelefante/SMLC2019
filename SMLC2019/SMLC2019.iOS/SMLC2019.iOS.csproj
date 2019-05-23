@@ -234,4 +234,7 @@
   <ItemGroup>
     <BundleResource Include="Resources\isc_de_rosa_b.jpg" />
   </ItemGroup>
+  <ItemGroup>
+    <BundleResource Include="Resources\switchcandidati.png" />
+  </ItemGroup>
 </Project>

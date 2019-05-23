@@ -25,6 +25,8 @@
             <views:NotIsNullConverter x:Key="NotIsNullConverter" />
             <views:NotBoolConverter x:Key="NotBoolConverter" />
             <views:CandidatoBackgroundColorConverter x:Key="CandidatoBGColorConverter" />
+            <views:CandidatoImageFromCollection x:Key="CandidatoImageFromCollection" />
+            <views:IntEqualsConverter x:Key="IntEquals" />
         </ResourceDictionary>
     </Application.Resources>
     
